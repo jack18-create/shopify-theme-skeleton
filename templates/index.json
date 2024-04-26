@@ -2,22 +2,29 @@
   "sections": {
     "1703136243197f9627": {
       "type": "apps",
-      "blocks": {
-        "7c450dac-4942-4fac-a28c-0a5a89d540f9": {
-          "type": "shopify:\/\/apps\/powr-image-slider\/blocks\/app-block\/db02efbb-fd06-4a97-88f3-663cfa9effba",
-          "settings": {
-            "app_id": "4d89ddd8_1703135906"
-          }
-        }
-      },
-      "block_order": [
-        "7c450dac-4942-4fac-a28c-0a5a89d540f9"
-      ],
       "settings": {
+      }
+    },
+    "dev_countdown_timer_7PL6ec": {
+      "type": "dev__countdown-timer",
+      "settings": {
+        "title": "Huraaaaay, Limited Period Offer",
+        "subtitle": "Be a part of our club, Grab the offer now!",
+        "end_date": "2024-12-31",
+        "container__main": "flex justify-center items-center bg-blue-100",
+        "subcontainer__main": "mx-3 sm:p-7 p-4 rounded-md flex justify-center flex-col gap-6",
+        "title__div": "flex flex-col gap-2 py-4 px-2",
+        "subtitle__div": "text-sm font-semibold text-center leading-8 text-black",
+        "title__h1__div": "text-center sm:text-3xl text-xl font-semibold leading-8",
+        "timer__container": "flex justify-between sm:px-4",
+        "timer_subdiv": "flex flex-col justify-center items-center gap-3",
+        "timer_numbers": "py-3 px-3 bg-gray-900 text-white text-3xl font-semibold rounded-md",
+        "timer__text": "text-sm text-black font-bold"
       }
     }
   },
   "order": [
-    "1703136243197f9627"
+    "1703136243197f9627",
+    "dev_countdown_timer_7PL6ec"
   ]
 }
