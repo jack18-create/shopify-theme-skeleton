@@ -1,0 +1,186 @@
+<div class="hero {{ section.settings.hero }}">
+  <div class="hero__left-col {{ section.settings.hero__left-col }}">
+    <div class="hero__header {{ section.settings.hero__header }}">
+      <h1 class="hero__title {{ section.settings.hero__title }}">{{ section.settings['hero-main'] }}</h1>
+      <p class="hero__subtitle {{ section.settings.hero__subtitle }}">{{ section.settings['hero-main-richtext'] }}</p>
+    </div>
+    <div class="hero__content {{ section.settings.hero__content }}">
+      {% if section.settings.hero__image != blank %}
+        {{
+          section.settings.hero__image
+          | image_url: width: 200
+          | image_tag: class: section.settings['tail-hero__image']
+        }}
+      {% endif %}
+      <p class="hero__description {{ section.settings.tail-hero__description }}">
+        {{ section.settings.hero__description }}
+      </p>
+    </div>
+  </div>
+  <div class="hero__right-col {{ section.settings.hero__right-col }}">
+    {% for block in section.blocks %}
+      {% if block.type == 'collection' and block.settings.collection != blank %}
+        <div class="hero__row {{ block.settings.hero__row }}">
+          <div class="hero__product-image {{ block.settings.hero__product-image }}">
+            {% if block.settings.collection.featured_image != blank %}
+              {{
+                block.settings.collection.featured_image
+                | image_url: width: 360
+                | image_tag: class: block.settings['hero__product-img']
+              }}
+            {% endif %}
+          </div>
+          <div class="hero__product {{ block.settings.hero__product }}">
+            <h3 class="hero__product-title {{ block.settings.hero__product-title }}">
+              {{ block.settings.collection.title }}
+            </h3>
+            <a
+              href="{{ block.settings.collection.url }}"
+              class="hero__product-link {{ block.settings.hero__product-link }}"
+            >
+              {{- block.settings.text | append: '→' -}}
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "html",
+      "id": "hero-main",
+      "label": "Hero heading"
+    },
+    {
+      "type": "richtext",
+      "id": "hero-main-richtext",
+      "label": "Hero subheading"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero__image",
+      "label": "Hero image"
+    },
+    {
+      "type": "textarea",
+      "id": "hero__description",
+      "label": "Hero description"
+    },
+
+    {
+      "type": "header",
+      "content": "Tailwind styling classes"
+    },
+    {
+      "type": "textarea",
+      "id": "hero",
+      "label": "Style hero"
+    },
+    {
+      "type": "textarea",
+      "id": "hero__left-col",
+      "label": "Style hero__left-col"
+    },
+    {
+      "type": "textarea",
+      "id": "hero__header",
+      "label": "Style hero__header"
+    },
+    {
+      "type": "textarea",
+      "id": "hero__title",
+      "label": "Style hero__title"
+    },
+    {
+      "type": "textarea",
+      "id": "hero__subtitle",
+      "label": "Style hero__subtitle"
+    },
+    {
+      "type": "textarea",
+      "id": "hero__content",
+      "label": "Style hero__content"
+    },
+    {
+      "type": "textarea",
+      "id": "tail-hero__image",
+      "label": "Style hero__image"
+    },
+    {
+      "type": "textarea",
+      "id": "tail-hero__description",
+      "label": "Style hero__description"
+    },
+    {
+      "type": "textarea",
+      "id": "hero__right-col",
+      "label": "Style hero__right-col"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Collection Block",
+      "type": "collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select collection"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Collection link text",
+          "default": "Shop now"
+        },
+        {
+          "type": "checkbox",
+          "id": "reverse-image",
+          "label": "Reverse image and text order"
+        },
+        {
+          "type": "textarea",
+          "id": "hero__row",
+          "label": "Style hero__row"
+        },
+        {
+          "type": "textarea",
+          "id": "hero__product",
+          "label": "Style hero__product"
+        },
+        {
+          "type": "textarea",
+          "id": "hero__product-title",
+          "label": "Style hero__product-title"
+        },
+        {
+          "type": "textarea",
+          "id": "hero__product-link",
+          "label": "Style hero__product-link"
+        },
+        {
+          "type": "textarea",
+          "id": "hero__product-image",
+          "label": "Style hero__product-image"
+        },
+        {
+          "type": "textarea",
+          "id": "hero__product-img",
+          "label": "Style hero__product-img"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "category": "Hero"
+    }
+  ]
+}
+{% endschema %}

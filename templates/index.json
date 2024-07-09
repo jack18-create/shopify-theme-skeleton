@@ -1,38 +1,59 @@
 {
   "sections": {
-    "00f180cc-37f9-4ca3-b4c4-fda0760014c8": {
-      "type": "demo__tailwind--simple-cta",
-      "settings": {
-        "title": "Join Us Today",
-        "description": "Sign up now to get exclusive offers and discounts.",
-        "button_link": "",
-        "button_text": "Sign Up",
-        "simple-cta": "bg-blue-100 py-8 px-4",
-        "simple-cta__content": "max-w-xl mx-auto text-center",
-        "simple-cta__title": "text-3xl font-bold text-gray-800 mb-2",
-        "simple-cta__description": "text-gray-600 mb-4",
-        "simple-cta__button": "inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-      }
-    },
-    "1703136243197f9627": {
-      "type": "apps",
+    "hero_XVGR7H": {
+      "type": "hero",
       "blocks": {
-        "7c450dac-4942-4fac-a28c-0a5a89d540f9": {
-          "type": "shopify:\/\/apps\/powr-image-slider\/blocks\/app-block\/db02efbb-fd06-4a97-88f3-663cfa9effba",
+        "collection_NnQ6ce": {
+          "type": "collection",
           "settings": {
-            "app_id": "4d89ddd8_1703135906"
+            "collection": "new-snowboards",
+            "text": "",
+            "reverse-image": false,
+            "hero__row": "",
+            "hero__product": "",
+            "hero__product-title": "",
+            "hero__product-link": "",
+            "hero__product-image": "",
+            "hero__product-img": ""
+          }
+        },
+        "collection_caeNrY": {
+          "type": "collection",
+          "settings": {
+            "collection": "dried-flowers",
+            "text": "",
+            "reverse-image": false,
+            "hero__row": "",
+            "hero__product": "",
+            "hero__product-title": "",
+            "hero__product-link": "",
+            "hero__product-image": "",
+            "hero__product-img": ""
           }
         }
       },
       "block_order": [
-        "7c450dac-4942-4fac-a28c-0a5a89d540f9"
+        "collection_NnQ6ce",
+        "collection_caeNrY"
       ],
       "settings": {
+        "hero-main": "Kyiv LuxeBouquets",
+        "hero-main-richtext": "<p>Discover Uniquely Crafted Bouquets and Gifts for Any Occasion: Spread Joy with Our <strong>Online Flower Delivery Service<\/strong><\/p>",
+        "hero__image": "shopify:\/\/shop_images\/heroimage.jpg",
+        "hero__description": "Experience the joy of giving with our modern floral studio. Order online and send fresh flowers, plants and gifts today.",
+        "hero": "flex flex-wrap",
+        "hero__left-col": "border-[1px] border-[dark-gray] w-full",
+        "hero__header": "",
+        "hero__title": "text-desktop-heading-1",
+        "hero__subtitle": "",
+        "hero__content": "",
+        "tail-hero__image": "",
+        "tail-hero__description": "",
+        "hero__right-col": "w-full"
       }
     }
   },
   "order": [
-    "00f180cc-37f9-4ca3-b4c4-fda0760014c8",
-    "1703136243197f9627"
+    "hero_XVGR7H"
   ]
 }

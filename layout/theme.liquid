@@ -59,8 +59,31 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
-
+    {%- liquid
+      assign heading_font_medium = settings.heading_font | font_modify: 'weight', "500"
+    %}
+    
     {% style %}
+
+      {{ settings.heading_font | font_face: font_display: 'swap' }}
+      {{ heading_font_medium | font_face: font_display: 'swap' }}
+      {{ settings.body_font | font_face: font_display: 'swap' }}
+
+      :root {
+        --body-font: {{ settings.body_font.family }};
+        --heading-font: {{ heading_font_medium.family }};
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: {{ heading_font_medium.family }}, {{ settings.body_font.fallback_families }};
+        font-weight: 500;
+      }
+
+      body {
+        font-family: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
+        font-weight: {{ settings.body_font.weight }};
+      }
+
       .visually-hidden {
         position: absolute !important;
         overflow: hidden;

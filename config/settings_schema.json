@@ -8,6 +8,33 @@
         "theme_support_url": "https://github.com/dear-digital/shopify-theme-skeleton/issues"
     },
     {
+        "name": "Typography",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Headings"
+            },
+            {
+                "type": "font_picker",
+                "id": "heading_font",
+                "label": "Heading font",
+                "default": "assistant_n4",
+                "info": "Select a font for all headings."
+            },
+            {
+                "type": "header",
+                "content": "Body text"
+            },
+            {
+                "type": "font_picker",
+                "id": "body_font",
+                "label": "Body font",
+                "default": "assistant_n4",
+                "info": "Select a font for all body text."
+            }
+        ]
+    },
+    {
         "name": "Logo",
         "settings": [
             {
