@@ -20,9 +20,10 @@
     </div>
   </div>
   <div class="hero__right-col {{ section.settings.hero__right-col }}">
+    {% assign first_block = true %}
     {% for block in section.blocks %}
       {% if block.type == 'collection' and block.settings.collection != blank %}
-        <div class="hero__row {{ block.settings.hero__row }} {% if block.settings.reverse-image %} flex-row-reverse	{% endif %}">
+        <div class="hero__row {{ block.settings.hero__row }} {% if block.settings.reverse-image %} flex-row-reverse	{% endif %} {% unless first_block %}border-t-0 {% endunless %}">
           <div class="hero__product-image {{ block.settings.hero__product-image }} {% unless block.settings.reverse-image %}border-r-[1px]{% endunless %}">
             {% if block.settings.collection.featured_image != blank %}
               {{
@@ -48,6 +49,7 @@
               </span>
             </a>
           </div>
+          {% assign first_block = false %}
         </div>
       {% endif %}
     {% endfor %}
@@ -90,13 +92,13 @@
       "type": "textarea",
       "id": "hero",
       "label": "Style hero",
-      "default": "flex-wrap lg:flex-nowrap lg:flex w-full justify-between items-start lg:items-stretch"
+      "default": "flex-wrap lg:flex-nowrap lg:flex w-full justify-between items-start lg:items-stretch lg:h-screen"
     },
     {
       "type": "textarea",
       "id": "hero__left-col",
       "label": "Style hero__left-col",
-      "default": "w-full lg:w-1/2 px-4 py-10 md:p-20 lg:border-y-[1px] lg:border-brand-black"
+      "default": "w-full lg:w-1/2 px-4 py-10 md:p-20 lg:border-y-[1px] lg:border-brand-black lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden"
     },
     {
       "type": "textarea",
@@ -138,7 +140,7 @@
       "type": "textarea",
       "id": "hero__right-col",
       "label": "Style hero__right-col",
-      "default": "w-full lg:w-1/2"
+      "default": "w-full lg:w-1/2 lg:h-screen lg:overflow-y-auto"
     }
   ],
   "blocks": [

@@ -1490,6 +1490,10 @@ video {
   overflow-x: auto;
 }
 
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1576,6 +1580,10 @@ video {
 
 .border-t-\[1px\] {
   border-top-width: 1px;
+}
+
+.border-t-0 {
+  border-top-width: 0px;
 }
 
 .border-solid {
@@ -3228,12 +3236,24 @@ video {
 }
 
 @media (min-width: 1440px) {
+  .lg\:fixed {
+    position: fixed;
+  }
+
+  .lg\:sticky {
+    position: sticky;
+  }
+
   .lg\:left-1 {
     left: 0.25rem;
   }
 
   .lg\:left-1\/2 {
     left: 50%;
+  }
+
+  .lg\:top-0 {
+    top: 0px;
   }
 
   .lg\:mb-16 {
@@ -3258,6 +3278,10 @@ video {
 
   .lg\:h-\[50\%\] {
     height: 50%;
+  }
+
+  .lg\:h-screen {
+    height: 100vh;
   }
 
   .lg\:w-1 {
@@ -3326,6 +3350,10 @@ video {
     flex-wrap: nowrap;
   }
 
+  .lg\:items-start {
+    align-items: flex-start;
+  }
+
   .lg\:items-stretch {
     align-items: stretch;
   }
@@ -3336,6 +3364,14 @@ video {
 
   .lg\:gap-12 {
     gap: 3rem;
+  }
+
+  .lg\:overflow-hidden {
+    overflow: hidden;
+  }
+
+  .lg\:overflow-y-auto {
+    overflow-y: auto;
   }
 
   .lg\:border-y-\[1px\] {
