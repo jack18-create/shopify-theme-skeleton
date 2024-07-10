@@ -71,6 +71,7 @@ module.exports = {
         "desktop-links": ["16px", "120%"],
         "desktop-overline": ["14px", "120%"],
         "desktop-caption": ["14px", "120%"],
+        "desktop-hero-caption": ["18px", "140%"],
         "desktop-caption-small": ["12px", "120%"],
 
         // Mobile Typography
@@ -86,7 +87,9 @@ module.exports = {
         "mobile-links": ["14px", "120%"],
         "mobile-overline": ["12px", "120%"],
         "mobile-caption": ["14px", "120%"],
+        "mobile-hero-caption": ["14px", "140%"],
         "mobile-caption-small": ["12px", "120%"],
+        "mobile-small-description": ["11px", "120%"],
       },
       fontFamily: {
         bodyFont: ["var(--body-font)", "sans-serif"],
@@ -99,6 +102,9 @@ module.exports = {
       },
       textTransform: {
         uppercase: "uppercase",
+      },
+      screens: {
+        '2xl': '1440px',  // large screen
       },
     },
   },

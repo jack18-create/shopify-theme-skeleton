@@ -21,7 +21,7 @@
     {% for block in section.blocks %}
       {% if block.type == 'collection' and block.settings.collection != blank %}
         <div class="hero__row {{ block.settings.hero__row }} {% if block.settings.reverse-image %} flex-row-reverse	{% endif %}">
-          <div class="hero__product-image {{ block.settings.hero__product-image }}">
+          <div class="hero__product-image {{ block.settings.hero__product-image }} {% unless block.settings.reverse-image %}border-r-[1px]{% endunless %}">
             {% if block.settings.collection.featured_image != blank %}
               {{
                 block.settings.collection.featured_image
@@ -30,15 +30,21 @@
               }}
             {% endif %}
           </div>
-            <div class="hero__product {{ block.settings.hero__product }} {% if block.settings.reverse-image %} border-r-[1px] {% else %} border-l-[1px] {% endif %}">
+            <div class="hero__product {{ block.settings.hero__product }} {% if block.settings.reverse-image %}border-r-[1px]{% endif %}">
             <h3 class="hero__product-title {{ block.settings.hero__product-title }}">
               {{ block.settings.collection.title }}
             </h3>
             <a
               href="{{ block.settings.collection.url }}"
-              class="hero__product-link {{ block.settings.hero__product-link }}"
+              class="hero__product-link {{ block.settings.hero__product-link }} {% unless block.settings.reverse-image %}flex-row-reverse{% endunless %}"
             >
-              {{- block.settings.text | append: '→' -}}
+              {% liquid
+                  assign arrow = '<span>→</span>' 
+                  unless block.settings.reverse-image
+                    assign arrow = '<span>←</span>'
+                  endunless  
+              %}
+              {{- block.settings.text | append: arrow -}}
             </a>
             </div>
           </div>
@@ -183,7 +189,13 @@
           "type": "textarea",
           "id": "hero__product-image",
           "label": "Style hero__product-image",
-          "default": "w-1/2 flex-grow object-cover"
+          "default": "w-1/2 flex-grow object-cover aspect-1/1"
+        },
+        {
+          "type": "textarea",
+          "id": "hero__product-img",
+          "label": "Style hero__product-img",
+          "default": "w-full h-full object-cover"
         }
       ]
     }
