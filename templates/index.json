@@ -60,6 +60,22 @@
     "hero_FRJw33": {
       "type": "hero",
       "blocks": {
+        "collection_KNx7qQ": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "text": "Shop now",
+            "reverse-image": false,
+            "hero__row": "flex items-stretch border-[1px] border-brand-black group",
+            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
+            "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
+            "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
+            "hero__product-link-text": "font-bold inline-block hover:underline",
+            "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
+            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
+            "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
+          }
+        },
         "collection_7BaLcL": {
           "type": "collection",
           "settings": {
@@ -94,6 +110,7 @@
         }
       },
       "block_order": [
+        "collection_KNx7qQ",
         "collection_7BaLcL",
         "collection_ULqUhA"
       ],
