@@ -3317,6 +3317,10 @@ video {
     display: flex;
   }
 
+  .lg\:h-1 {
+    height: 0.25rem;
+  }
+
   .lg\:h-80 {
     height: 20rem;
   }
@@ -3327,14 +3331,6 @@ video {
 
   .lg\:h-screen {
     height: 100vh;
-  }
-
-  .lg\:h-1\/2 {
-    height: 50%;
-  }
-
-  .lg\:h-1 {
-    height: 0.25rem;
   }
 
   .lg\:max-h-\[50vw\] {
