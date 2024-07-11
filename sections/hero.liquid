@@ -26,11 +26,13 @@
         <div class="hero__row {{ block.settings.hero__row }} {% if block.settings.reverse-image %} flex-row-reverse	{% endif %} {% unless first_block %}border-t-0 {% endunless %}">
           <div class="hero__product-image {{ block.settings.hero__product-image }} {% unless block.settings.reverse-image %}border-r-[1px]{% endunless %}">
             {% if block.settings.collection.featured_image != blank %}
-              {{
-                block.settings.collection.featured_image
-                | image_url: width: 500
-                | image_tag: class: block.settings['hero__product-img']
-              }}
+              <a href="{{ block.settings.collection.url }}">
+                {{
+                  block.settings.collection.featured_image
+                  | image_url: width: 500
+                  | image_tag: class: block.settings['hero__product-img']
+                }}
+              </a>
             {% endif %}
           </div>
           <div class="hero__product {{ block.settings.hero__product }} {% if block.settings.reverse-image %}border-r-[1px]{% endif %}">
