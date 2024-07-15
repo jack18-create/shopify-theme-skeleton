@@ -7,23 +7,28 @@
     </div>
 
     <div class="about_us__container_right {{ section.settings.about_us__container_right }}">
-        <h6 class="about_us__container_right_small_header_classes {{ section.settings.about_us__container_right_small_header_classes }}">
+        
+        <div class="about_us__container_right_content {{ section.settings.about_us__container_right_content }}">
+            <h6 class="about_us__container_right_small_header_classes {{ section.settings.about_us__container_right_small_header_classes }}">
             {{ section.settings.about_us__container_right_small_header }}
-        </h6>
-        <h4 class="about_us__container_right_sub_header_classes {{ section.settings.about_us__container_right_sub_header_classes }}">
-            {{ section.settings.about_us__container_right_sub_header }}
-        </h4>
-        <p class="about_us__container_right_description_classes {{ section.settings.about_us__container_right_description_classes }}">
-            {{ section.settings.about_us__container_right_description }}
-        </p>
+            </h6>
+            <h4 class="about_us__container_right_sub_header_classes {{ section.settings.about_us__container_right_sub_header_classes }}">
+                {{ section.settings.about_us__container_right_sub_header }}
+            </h4>
+            <div class="about_us__container_right_description_classes {{ section.settings.about_us__container_right_description_classes }}">
+                {{ section.settings.about_us__container_right_description }}
+            </div>
+        </div>
 
-        <button class="{{ section.settings.about_us__container_right_button }}">
-            {%- if section.settings.about_us__container_right_button_label != blank -%}
-                <a href="{{ section.settings.about_us__container_right_button_link }}">
-                    {{- section.settings.about_us__container_right_button_label | escape -}}
-                </a>
-            {%- endif -%}
-        </button>
+        <div class="{{ section.settings.about_us__container_right_button_div }}">
+            <button class="{{ section.settings.about_us__container_right_button_classes }}">
+                {%- if section.settings.about_us__container_right_button_label != blank -%}
+                    <a href="{{ section.settings.about_us__container_right_button_link }}">
+                        {{- section.settings.about_us__container_right_button_label | escape -}}
+                    </a>
+                {%- endif -%}
+            </button>
+        </div>
     </div>
 
 </div>
@@ -60,7 +65,13 @@
             "type": "textarea",
             "id": "about_us__container_right",
             "label": "Right Container Classes",
-            "default": "w-full px-4 py-10 border-brand-black border border-t-0 flex flex-col gap-6"
+            "default": "w-full px-4 py-10 border-brand-black border border-t-0"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_right_content",
+            "label": "Right Container Content Classes",
+            "default": "flex flex-col gap-6"
         },
         {
             "type": "inline_richtext",
@@ -111,9 +122,15 @@
         },
         {
             "type": "textarea",
-            "id": "about_us__container_right_button",
+            "id": "about_us__container_right_button_div",
+            "label": "Button Div Classes",
+            "default": "bg-blue-500"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_right_button_classes",
             "label": "Button Classes",
-            "default": "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            "default": "text-brand-black uppercase hover:bg-brand-black hover:text-white text-mobile-button font-medum border border-brand-black py-4 px-6 mt-10"
         }
     ],
     "presets": [
