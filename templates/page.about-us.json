@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "about-us": {
+      "type": "about-us",
+      "settings": {
+        "about_us__container": "flex flex-col md:flex-row w-full",
+        "about_us__container_left": "w-full px-4 py-10 border-brand-black border border-t-0 gap-4",
+        "about_us__container_left_heading": "About Us",
+        "about_us__container_left_heading_classes": "text-mobile-heading-2 font-semibold",
+        "about_us__container_right": "w-full px-4 py-10 border-brand-black border border-t-0 flex flex-col gap-6",
+        "about_us__container_right_small_header": "Our Story",
+        "about_us__container_right_small_header_classes": "text-mobile-overline font-medium",
+        "about_us__container_right_sub_header": "Kyiv LuxeBouquets",
+        "about_us__container_right_sub_header_classes": "text-mobile-heading-3 font-medium",
+        "about_us__container_right_description": "<p>We are a modern local floral studio, which specializes in the design and delivery of unique bouquets. We have the best florists who carefully select each look, our studio cooperates directly with farms for growing different flowers, so we always have fresh flowers, which are collected by our florists in exquisite bouquets. We have a collection of fresh bouquets, collections of dried bouquets, house plants, as well as fragrant candles from luxury brands to create the perfect atmosphere. Make someone's day amazing by sending flowers, plants and gifts the same or next day. Ordering flowers online has never been easier.<\/p>",
+        "about_us__container_right_description_classes": "text-mobile-body font-regular opacity-90",
+        "about_us__container_right_button_label": "Learn More",
+        "about_us__container_right_button_link": "",
+        "about_us__container_right_button": "text-brand-black uppercase hover:bg-brand-black hover:text-white text-mobile-button font-medum border border-brand-black py-4 px-6 mt-10"
+      }
+    }
+  },
+  "order": [
+    "about-us"
+  ]
+}
