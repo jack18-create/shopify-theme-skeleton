@@ -1,9 +1,11 @@
 <div class="about_us__container {{ section.settings.about_us__container }}">
 
     <div class="about_us__container_left {{ section.settings.about_us__container_left }}">
-        <h2 class="about_us__container_left_heading_classes {{ section.settings.about_us__container_left_heading_classes }}">
+        <div class="about_us__container_left_heading_div_classes {{ section.settings.about_us__container_left_heading_div_classes }}">
+            <h2 class="about_us__container_left_heading_classes {{ section.settings.about_us__container_left_heading_classes }}">
             {{ section.settings.about_us__container_left_heading }}
-        </h2>
+            </h2>
+        </div>
     </div>
 
     <div class="about_us__container_right {{ section.settings.about_us__container_right }}">
@@ -38,40 +40,10 @@
     "name": "About Us",
     "settings": [
         {
-            "type": "textarea",
-            "id": "about_us__container",
-            "label": "Container Classes",
-            "default": "flex flex-col lg:flex-row w-full"
-        },
-        {
-            "type": "textarea",
-            "id": "about_us__container_left",
-            "label": "Left Container Classes",
-            "default": "w-full px-4 py-10 border-brand-black border border-t-0 gap-4 md:p-20 "
-        },
-        {
             "type": "inline_richtext",
             "id": "about_us__container_left_heading",
             "label": "Left Heading Text",
             "default": "About Us"
-        },
-        {
-            "type": "textarea",
-            "id": "about_us__container_left_heading_classes",
-            "label": "Left Heading Text Classes",
-            "default": "text-brand-black text-mobile-heading-2 font-semibold md:text-desktop-heading-2"
-        },
-        {
-            "type": "textarea",
-            "id": "about_us__container_right",
-            "label": "Right Container Classes",
-            "default": "w-full px-4 py-10 border-brand-black border border-t-0 md:p-20 lg:border-l-0"
-        },
-        {
-            "type": "textarea",
-            "id": "about_us__container_right_content",
-            "label": "Right Container Content Classes",
-            "default": "flex flex-col gap-6"
         },
         {
             "type": "inline_richtext",
@@ -80,34 +52,16 @@
             "default": "Our Story"
         },
         {
-            "type": "textarea",
-            "id": "about_us__container_right_small_header_classes",
-            "label": "Right Small Header Text Classes",
-            "default": "uppercase text-brand-black text-mobile-overline font-medium md:text-desktop-overline"
-        },
-        {
             "type": "inline_richtext",
             "id": "about_us__container_right_sub_header",
             "label": "Right Sub Header Text",
             "default": "Kyiv LuxeBouquets"
         },
         {
-            "type": "textarea",
-            "id": "about_us__container_right_sub_header_classes",
-            "label": "Right Sub Header Text Classes",
-            "default": "text-brand-black text-mobile-heading-3 font-medium md:text-desktop-heading-3"
-        },
-        {
             "type": "richtext",
             "id": "about_us__container_right_description",
             "label": "Right Description Text",
             "default": "<p>We are a modern local floral studio, which specializes in the design and delivery of unique bouquets. We have the best florists who carefully select each look, our studio cooperates directly with farms for growing different flowers, so we always have fresh flowers, which are collected by our florists in exquisite bouquets. We have a collection of fresh bouquets, collections of dried bouquets, house plants, as well as fragrant candles from luxury brands to create the perfect atmosphere. Make someone's day amazing by sending flowers, plants and gifts the same or next day. Ordering flowers online has never been easier.</p>"
-        },
-        {
-            "type": "textarea",
-            "id": "about_us__container_right_description_classes",
-            "label": "Right Description Text Classes",
-            "default": "text-mobile-body font-regular opacity-90"
         },
         {
             "type": "textarea",
@@ -119,6 +73,64 @@
             "type": "url",
             "id": "about_us__container_right_button_link",
             "label": "Button Link"
+        },
+        {
+            "type": "header",
+            "content": "Tailwind styling classes"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container",
+            "label": "Container Classes",
+            "default": "flex flex-col lg:flex-row w-full"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_left",
+            "label": "Left Container Classes",
+            "default": "w-full px-4 py-10 border-brand-black border border-t-0 gap-4 md:p-20 lg:border-r-0"
+        },
+         {
+            "type": "textarea",
+            "id": "about_us__container_left_heading_div_classes",
+            "label": "Left Container Heading Div Classes",
+            "default": "lg:sticky lg:top-[5.56vw]"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_left_heading_classes",
+            "label": "Left Heading Text Classes",
+            "default": "text-brand-black text-mobile-heading-2 font-semibold md:text-desktop-heading-2"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_right",
+            "label": "Right Container Classes",
+            "default": "w-full px-4 py-10 border-brand-black border border-t-0 md:p-20 lg:border-r-0 lg:border-l-1"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_right_content",
+            "label": "Right Container Content Classes",
+            "default": "flex flex-col gap-6"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_right_small_header_classes",
+            "label": "Right Small Header Text Classes",
+            "default": "uppercase text-brand-black text-mobile-overline font-medium md:text-desktop-overline"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_right_sub_header_classes",
+            "label": "Right Sub Header Text Classes",
+            "default": "text-brand-black text-mobile-heading-3 font-medium md:text-desktop-heading-3"
+        },
+        {
+            "type": "textarea",
+            "id": "about_us__container_right_description_classes",
+            "label": "Right Description Text Classes",
+            "default": "text-mobile-body font-regular opacity-90"
         },
         {
             "type": "textarea",
@@ -135,8 +147,7 @@
     ],
     "presets": [
         {
-            "name": "About Us",
-            "category": "Custom Sections"
+            "name": "About Us"
         }
     ]
 }
