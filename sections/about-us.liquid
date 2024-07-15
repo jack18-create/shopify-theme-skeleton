@@ -20,15 +20,15 @@
             </div>
         </div>
 
+        {%- if section.settings.about_us__container_right_button_label != blank -%}
         <div class="{{ section.settings.about_us__container_right_button_div }}">
             <button class="{{ section.settings.about_us__container_right_button_classes }}">
-                {%- if section.settings.about_us__container_right_button_label != blank -%}
                     <a href="{{ section.settings.about_us__container_right_button_link }}">
                         {{- section.settings.about_us__container_right_button_label | escape -}}
                     </a>
-                {%- endif -%}
-            </button>
-        </div>
+                </button>
+            </div>
+        {%- endif -%}
     </div>
 
 </div>
@@ -41,13 +41,13 @@
             "type": "textarea",
             "id": "about_us__container",
             "label": "Container Classes",
-            "default": "flex flex-col md:flex-row w-full"
+            "default": "flex flex-col lg:flex-row w-full"
         },
         {
             "type": "textarea",
             "id": "about_us__container_left",
             "label": "Left Container Classes",
-            "default": "w-full px-4 py-10 border-brand-black border border-t-0 gap-4"
+            "default": "w-full px-4 py-10 border-brand-black border border-t-0 gap-4 md:p-20 "
         },
         {
             "type": "inline_richtext",
@@ -59,13 +59,13 @@
             "type": "textarea",
             "id": "about_us__container_left_heading_classes",
             "label": "Left Heading Text Classes",
-            "default": "text-mobile-heading-2 font-semibold"
+            "default": "text-brand-black text-mobile-heading-2 font-semibold md:text-desktop-heading-2"
         },
         {
             "type": "textarea",
             "id": "about_us__container_right",
             "label": "Right Container Classes",
-            "default": "w-full px-4 py-10 border-brand-black border border-t-0"
+            "default": "w-full px-4 py-10 border-brand-black border border-t-0 md:p-20 lg:border-l-0"
         },
         {
             "type": "textarea",
@@ -83,7 +83,7 @@
             "type": "textarea",
             "id": "about_us__container_right_small_header_classes",
             "label": "Right Small Header Text Classes",
-            "default": "text-mobile-overline font-medium "
+            "default": "uppercase text-brand-black text-mobile-overline font-medium md:text-desktop-overline"
         },
         {
             "type": "inline_richtext",
@@ -95,7 +95,7 @@
             "type": "textarea",
             "id": "about_us__container_right_sub_header_classes",
             "label": "Right Sub Header Text Classes",
-            "default": "text-mobile-heading-3 font-medium "
+            "default": "text-brand-black text-mobile-heading-3 font-medium md:text-desktop-heading-3"
         },
         {
             "type": "richtext",
@@ -124,13 +124,13 @@
             "type": "textarea",
             "id": "about_us__container_right_button_div",
             "label": "Button Div Classes",
-            "default": "bg-blue-500"
+            "default": "flex items-start justify-center mt-16 md:inline-block"
         },
         {
             "type": "textarea",
             "id": "about_us__container_right_button_classes",
             "label": "Button Classes",
-            "default": "text-brand-black uppercase hover:bg-brand-black hover:text-white text-mobile-button font-medum border border-brand-black py-4 px-6 mt-10"
+            "default": "text-brand-black uppercase hover:bg-brand-black hover:text-white text-mobile-button font-medium border border-brand-black pt-4 pb-[14px] px-6 tracking-[0.025em] w-full md:w-[175px] md:h-[56px] md:tracking-[0.03em] md:text-desktop-button"
         }
     ],
     "presets": [
