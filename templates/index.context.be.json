@@ -13,30 +13,8 @@
     "market": "be"
   },
   "sections": {
-    "dev_card_our_team_mgEGf": {
-      "type": "dev__card-OurTeam",
-      "disabled": false,
-      "settings": {
-        "section_title": "Our Team",
-        "section_subtitle": "Have a look at our team!!",
-        "image_width": 400,
-        "image_height": 200,
-        "header-d242013478d45b88913afbb1130a283a": null,
-        "card__main": "bg-gray-900 py-8 px-4 mx-auto lg:py-16 lg:px-6",
-        "card__main__div": "mx-auto max-w-screen-sm text-center mb-8 lg:mb-16",
-        "card__main__title": "mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white",
-        "card__main__subtitle": "font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400",
-        "card__block_div": "grid gap-8 mb-6 lg:mb-16 md:grid-cols-2"
-      },
-      "blocks": {
-      },
-      "block_order": [
-
-      ]
-    }
   },
   "order": [
-    "dev_service_LDAbFY",
-    "dev_card_our_team_mgEGf"
+    "dev_service_LDAbFY"
   ]
 }
