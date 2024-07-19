@@ -1,0 +1,256 @@
+<div class="reviews__container {{ section.settings.tw-reviews__container }}">
+  <div class="reviews__wrapper {{ section.settings.tw-reviews__wrapper }}">
+    <div class="reviews__content {{ section.settings.tw-reviews__content }}">
+      <div class="reviews__overline-heading {{ section.settings.tw-reviews__overline-heading }}">
+        <div class="reviews__logo-wrapper {{ section.settings.tw-reviews__logo-wrapper }}">
+          <div class="reviews__logo-icon {{ section.settings.tw-reviews__logo-icon-wrapper }}">
+            {% if section.settings.logo != blank %}
+              {{
+                section.settings.logo
+                | image_url: '50x50'
+                | image_tag: class: section.settings['tw-reviews__logo-img']
+              }}
+            {% else %}
+              {% render 'icon-google' %}
+            {% endif %}
+          </div>
+          <div class="reviews__logo-text {{ section.settings.tw-reviews__logo-text }}">
+            {{ section.settings.overline_heading }}
+          </div>
+        </div>
+        <h3 class="reviews__heading {{ section.settings.tw-reviews__heading }}">
+          {{ section.settings.heading }}
+        </h3>
+      </div>
+      <div class="swiper-container {{ section.settings.tw-swiper-container }}" id="reviewSwiper">
+        <div class="swiper-wrapper {{ section.settings.tw-swiper-wrapper }}">
+          {% for block in section.blocks %}
+            <div class="swiper-slide {{ section.settings.tw-swiper-slide }}">
+              {{ block.settings.review_text }}
+            </div>
+          {% endfor %}
+        </div>
+        <button class="swiper-button-prev {{ section.settings.tw-swiper-button-prev }}">
+          {% render 'icon-swiper-left' %}
+        </button>
+        <button class="swiper-button-next {{ section.settings.tw-swiper-button-next }}">
+          {% render 'icon-swiper-right' %}
+        </button>
+      </div>
+    </div>
+    <div class="reviews__button {{ section.settings.tw-reviews__button }}">
+      <a
+        href="{{ section.settings.button_link }}"
+        class="button button--primary {{ section.settings.tw-button__link }}"
+      >
+        {{ section.settings.button_text }}
+      </a>
+    </div>
+  </div>
+</div>
+
+{% comment %}
+  <div class="swiper-container w-full h-[300px] relative overflow-hidden" id="reviewSwiper">
+    <div class="swiper-wrapper flex transition-transform duration-[0.3s] ease-[ease-in-out]">
+      {% for block in section.blocks %}
+        <div class="swiper-slide shrink-0 w-full h-full">{{ block.settings.review_text }}</div>
+      {% endfor %}
+    </div>
+    <button class="swiper-button swiper-button-prev left-2.5 -translate-y-2/4 text-black no-underline p-2.5 top-2/4">
+      Prev
+    </button>
+    <button class="swiper-button swiper-button-next right-2.5 -translate-y-2/4 text-black no-underline p-2.5 top-2/4">
+      Next
+    </button>
+  </div>
+{% endcomment %}
+
+<script>
+  function initSwiper() {
+    console.log('Initializing Swiper');
+    const container = document.getElementById('reviewSwiper');
+    if (!container) {
+      console.log('Swiper container not found');
+      return;
+    }
+
+    const wrapper = container.querySelector('.swiper-wrapper');
+    const slides = container.querySelectorAll('.swiper-slide');
+    const prevBtn = container.querySelector('.swiper-button-prev');
+    const nextBtn = container.querySelector('.swiper-button-next');
+    let currentIndex = 0;
+
+    console.log(`Found ${slides.length} slides`);
+
+    function updateSlidePosition() {
+      const translateX = -currentIndex * 100;
+      wrapper.style.transform = `translateX(${translateX}%)`;
+      console.log(`Moved to slide ${currentIndex + 1}`);
+    }
+
+    function slideNext() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateSlidePosition();
+    }
+
+    function slidePrev() {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      updateSlidePosition();
+    }
+
+    prevBtn.addEventListener('click', slidePrev);
+    nextBtn.addEventListener('click', slideNext);
+
+    console.log('Swiper initialized');
+  }
+
+  function runInitSwiper() {
+    console.log('Running initSwiper');
+    initSwiper();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runInitSwiper);
+  } else {
+    runInitSwiper();
+  }
+
+  if (Shopify && Shopify.designMode) {
+    document.addEventListener('shopify:section:load', runInitSwiper);
+    document.addEventListener('shopify:section:select', runInitSwiper);
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline_heading",
+      "label": "Overline Heading",
+      "default": "Overline Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Heading"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Button"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__container",
+      "label": "Container Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__wrapper",
+      "label": "Wrapper Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__content",
+      "label": "Content Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__overline-heading",
+      "label": "Overline Heading Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__logo-wrapper",
+      "label": "Logo Wrapper Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__logo-icon-wrapper",
+      "label": "Logo Icon Wrapper Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__logo-img",
+      "label": "Logo Image Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__logo-text",
+      "label": "Logo Text Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__heading",
+      "label": "Heading Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-swiper-container",
+      "label": "Swiper Container Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-swiper-wrapper",
+      "label": "Swiper Wrapper Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-swiper-slide",
+      "label": "Swiper Slide Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-swiper-button-prev",
+      "label": "Swiper Button Prev Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-swiper-button-next",
+      "label": "Swiper Button Next Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-reviews__button",
+      "label": "Button Class"
+    },
+    {
+      "type": "text",
+      "id": "tw-button__link",
+      "label": "Button Link Class"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "review_text",
+          "label": "Review Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews"
+    }
+  ]
+}
+{% endschema %}
