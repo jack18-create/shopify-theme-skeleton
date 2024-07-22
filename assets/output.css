@@ -1090,6 +1090,14 @@ video {
   height: 100vh;
 }
 
+.h-\[416px\] {
+  height: 416px;
+}
+
+.w-1 {
+  width: 0.25rem;
+}
+
 .w-1\/2 {
   width: 50%;
 }
@@ -1684,6 +1692,11 @@ video {
   border-color: rgb(148 163 184 / var(--tw-border-opacity));
 }
 
+.border-white {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
 .bg-\[\#ebe7e7\] {
   --tw-bg-opacity: 1;
   background-color: rgb(235 231 231 / var(--tw-bg-opacity));
@@ -1804,6 +1817,11 @@ video {
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
 }
 
+.bg-red-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
+}
+
 .bg-opacity-20 {
   --tw-bg-opacity: 0.2;
 }
@@ -1818,6 +1836,14 @@ video {
 
 .bg-opacity-80 {
   --tw-bg-opacity: 0.8;
+}
+
+.bg-cover {
+  background-size: cover;
+}
+
+.bg-center {
+  background-position: center;
 }
 
 .object-cover {
@@ -1864,6 +1890,10 @@ video {
 
 .p-\[10px\] {
   padding: 10px;
+}
+
+.p-8 {
+  padding: 2rem;
 }
 
 .px-2 {
@@ -2170,6 +2200,11 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-mobile-caption-small {
+  font-size: 12px;
+  line-height: 120%;
 }
 
 .font-bold {
@@ -2560,6 +2595,11 @@ video {
   cursor: pointer;
 }
 
+.hover\:border-brand-black:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(18 18 18 / var(--tw-border-opacity));
+}
+
 .hover\:bg-blue-400:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(96 165 250 / var(--tw-bg-opacity));
@@ -2658,6 +2698,11 @@ video {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.hover\:text-black:hover {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .hover\:underline:hover {
@@ -3293,6 +3338,10 @@ video {
     align-items: flex-end;
   }
 
+  .md\:items-center {
+    align-items: center;
+  }
+
   .md\:gap-4 {
     gap: 1rem;
   }
@@ -3555,6 +3604,11 @@ video {
     line-height: 1.75rem;
   }
 
+  .md\:text-mobile-caption {
+    font-size: 14px;
+    line-height: 120%;
+  }
+
   .md\:font-medium {
     font-weight: 500;
   }
@@ -3634,6 +3688,10 @@ video {
 
   .lg\:h-screen {
     height: 100vh;
+  }
+
+  .lg\:h-\[720px\] {
+    height: 720px;
   }
 
   .lg\:max-h-\[50vw\] {
