@@ -1,57 +1,32 @@
 {
   "sections": {
-    "dev_reviews_N8NVWV": {
+    "dev_reviews_aAyUHJ": {
       "type": "dev__reviews",
-      "blocks": {
-        "review_cUYWFa": {
-          "type": "review",
-          "settings": {
-            "review_text": "“Ordered flowers online and they were the best bouquet! Impressed everyone around. Highly recommend this flower shop!”"
-          }
-        },
-        "review_xwiQgp": {
-          "type": "review",
-          "settings": {
-            "review_text": "“Ordered flowers online and they were the best bouquet! Impressed everyone around. Highly recommend this flower shop!”"
-          }
-        },
-        "review_9ETwEM": {
-          "type": "review",
-          "settings": {
-            "review_text": "“Ordered flowers online and they were the best bouquet! Impressed everyone around. Highly recommend this flower shop!”"
-          }
-        }
-      },
-      "block_order": [
-        "review_cUYWFa",
-        "review_xwiQgp",
-        "review_9ETwEM"
-      ],
       "settings": {
-        "overline_heading": "REVIEWS",
-        "heading": "Our Clients say",
+        "overline_heading": "Overline Heading",
+        "heading": "Heading",
         "button_link": "",
         "button_text": "Button",
         "tw-reviews__container": "",
-        "tw-reviews__wrapper": "flex flex-col lg:gap-16 lg:p-20 lg:items-center lg:justify-center text-center",
-        "tw-reviews__content": "flex flex-col gap-4",
-        "tw-reviews__overline-heading": "flex flex-col gap-6",
-        "tw-reviews__logo-wrapper": "flex flex-col gap-2",
-        "tw-reviews__logo-icon-wrapper": "flex justify-center",
+        "tw-reviews__wrapper": "",
+        "tw-reviews__content": "",
+        "tw-reviews__overline-heading": "",
+        "tw-reviews__logo-wrapper": "",
+        "tw-reviews__logo-icon-wrapper": "",
         "tw-reviews__logo-img": "",
-        "tw-reviews__logo-text": "lg:font-medium lg:text-desktop-overline",
-        "tw-reviews__heading": "lg:font-semibold lg:text-desktop-heading-2",
-        "tw-swiper-container": "w-full relative overflow-hidden",
-        "tw-swiper-wrapper": "flex transition-transform duration-[0.3s] ease-[ease-in-out] gap-6",
-        "tw-swiper-slide": "shrink-0 w-full",
-        "tw-swiper-button-prev": "left-2.5 -translate-y-2\/4 text-black no-underline p-2.5 absolute top-2\/4",
-        "tw-swiper-button-next": "right-2.5 -translate-y-2\/4 text-black no-underline p-2.5 absolute top-2\/4",
+        "tw-reviews__logo-text": "",
+        "tw-reviews__heading": "",
+        "tw-swiper-container": "",
+        "tw-swiper-wrapper": "",
+        "tw-swiper-slide": "",
+        "tw-swiper-button-prev": "",
+        "tw-swiper-button-next": "",
         "tw-reviews__button": "",
         "tw-button__link": ""
       }
     }
   },
   "order": [
-    "dev_reviews_N8NVWV"
+    "dev_reviews_aAyUHJ"
   ]
 }
