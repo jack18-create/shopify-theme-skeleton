@@ -19,6 +19,3 @@ shopify.theme.toml
 # Gem #
 Gemfile
 Gemfile.lock
-
-# Ignore Output CSS #
-assets/output.css
