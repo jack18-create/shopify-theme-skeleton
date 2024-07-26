@@ -2,88 +2,72 @@ name: Shopify Theme Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  manage-preview:
+  preview:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.7
-        if: github.event.action != 'closed'
+      - uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: "18.x" # Using LTS version for stability
+          node-version: "14"
 
       - name: Install Shopify CLI
-        run: |
-          npm install -g @shopify/cli @shopify/theme
-          shopify version
-
-      - name: Create .env file
-        run: |
-          echo "SHOPIFY_FLAG_STORE=${{ secrets.SHOPIFY_STORE }}" >> $GITHUB_ENV
-          echo "SHOPIFY_CLI_THEME_TOKEN=${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}" >> $GITHUB_ENV
+        run: npm install -g @shopify/cli @shopify/theme
 
       - name: Authenticate with Shopify
-        run: |
-          echo "${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}" | shopify auth login --store "${{ secrets.SHOPIFY_STORE }}" --password
-          shopify auth list
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_THEME_TOKEN }}
+        run: shopify auth login
 
-      - name: Push to Shopify and get preview URL
-        id: push_theme
-        if: github.event.action != 'closed'
+      - name: Deploy theme preview
+        id: deploy
         run: |
-          output=$(shopify theme push --unpublished --store ${{ secrets.SHOPIFY_STORE }} --verbose --json || echo '{"error": true}')
-          if echo "$output" | jq -e '.error' > /dev/null; then
-            echo "Error pushing theme. Falling back to development theme."
-            output=$(shopify theme info --store ${{ secrets.SHOPIFY_STORE }} --json)
+          EXISTING_PREVIEW_ID=$(shopify theme list --json | jq -r '.themes[] | select(.role == "development") | .id')
+          if [ -z "$EXISTING_PREVIEW_ID" ]; then
+            PREVIEW_ID=$(shopify theme push --json --development | jq -r '.theme.id')
+          else
+            PREVIEW_ID=$EXISTING_PREVIEW_ID
+            shopify theme push $PREVIEW_ID --json
           fi
-          theme_id=$(echo "$output" | jq -r '.theme.id // empty')
-          preview_url=$(echo "$output" | jq -r '.theme.preview_url // empty')
-          if [ -z "$theme_id" ] || [ -z "$preview_url" ]; then
-            echo "Failed to get theme information"
-            exit 1
-          fi
-          echo "PREVIEW_URL=$preview_url" >> $GITHUB_OUTPUT
-          echo "THEME_ID=$theme_id" >> $GITHUB_OUTPUT
+          PREVIEW_URL="https://${{ secrets.SHOPIFY_STORE }}/admin/themes/$PREVIEW_ID/editor"
+          echo "::set-output name=preview_url::$PREVIEW_URL"
 
-      - name: Comment PR with preview link and theme ID
-        if: github.event.action != 'closed'
-        uses: actions/github-script@v7.0.1
+      - name: Comment PR
+        uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
-              repo: context.repo.name,
-              body: `Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}
-              
-              THEME_ID=${{ steps.push_theme.outputs.THEME_ID }}`
+              repo: context.repo.repo,
+              body: 'Preview link: ${{ steps.deploy.outputs.preview_url }}'
             })
+
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true || github.event.action == 'closed'
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli @shopify/theme
+
+      - name: Authenticate with Shopify
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_THEME_TOKEN }}
+        run: shopify auth login
 
       - name: Remove preview theme
-        if: github.event.action == 'closed'
         run: |
-          theme_id=$(curl -s ${{ github.event.pull_request.comments_url }} | jq -r '.[] | select(.body | contains("THEME_ID=")) | .body' | sed -n 's/.*THEME_ID=\([0-9]*\).*/\1/p' | tail -n1)
-          if [ ! -z "$theme_id" ]; then
-            shopify theme delete --store ${{ secrets.SHOPIFY_STORE }} -t $theme_id -f
-          else
-            echo "No theme ID found to delete"
-          fi
-
-      - name: Comment PR about removal
-        if: github.event.action == 'closed'
-        uses: actions/github-script@v7.0.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.name,
-              body: 'The preview theme for this PR has been removed.'
-            })
+          PREVIEW_ID=$(shopify theme list --json | jq -r '.themes[] | select(.role == "development") | .id')
+          shopify theme delete -f $PREVIEW_ID
