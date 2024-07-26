@@ -31,7 +31,7 @@ jobs:
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           SHOPIFY_THEME_DIRECTORY: "." # Or your theme directory
-          # SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false # Set to true if deploying to a live theme
+          SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: FALSE # Set to true if deploying to a live theme
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Remove the previously created PR specific Shopify theme when PR is closed
