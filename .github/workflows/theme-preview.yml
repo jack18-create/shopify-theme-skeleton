@@ -23,29 +23,22 @@ jobs:
         id: deploy
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
         run: |
-          echo "Listing themes:"
-          shopify theme list --json | jq '.'
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          THEME_NAME="PR-$PR_NUMBER"
 
-          EXISTING_PREVIEW_ID=$(shopify theme list --json | jq -r '.[] | select(.role == "development") | .id')
-          echo "Existing Preview ID: $EXISTING_PREVIEW_ID"
+          echo "Creating/updating preview theme for PR #$PR_NUMBER"
+          THEME_INFO=$(shopify theme push --unpublished --json --theme "$THEME_NAME")
+          echo "Theme push output:"
+          echo "$THEME_INFO" | jq '.'
 
-          if [ -z "$EXISTING_PREVIEW_ID" ]; then
-            echo "Creating new development theme"
-            THEME_INFO=$(shopify theme push --unpublished --json)
-            echo "Theme push output:"
-            echo "$THEME_INFO" | jq '.'
-            PREVIEW_ID=$(echo "$THEME_INFO" | jq -r '.theme.id')
-          else
-            echo "Using existing development theme"
-            PREVIEW_ID=$EXISTING_PREVIEW_ID
-            shopify theme push $PREVIEW_ID --json
-          fi
+          PREVIEW_ID=$(echo "$THEME_INFO" | jq -r '.theme.id')
+          PREVIEW_URL=$(echo "$THEME_INFO" | jq -r '.theme.preview_url')
 
           echo "Preview ID: $PREVIEW_ID"
+          echo "Preview URL: $PREVIEW_URL"
 
-          PREVIEW_URL=$(echo "$THEME_INFO" | jq -r '.theme.preview_url')
           echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
           echo "preview_id=$PREVIEW_ID" >> $GITHUB_OUTPUT
 
@@ -76,17 +69,21 @@ jobs:
       - name: Remove preview theme
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
         run: |
-          echo "Listing themes:"
-          shopify theme list --json | jq '.'
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          THEME_NAME="PR-$PR_NUMBER"
 
-          PREVIEW_ID=$(shopify theme list --json | jq -r '.[] | select(.role == "development") | .id')
+          echo "Listing themes:"
+          THEME_LIST=$(shopify theme list --json)
+          echo "$THEME_LIST" | jq '.'
+
+          PREVIEW_ID=$(echo "$THEME_LIST" | jq -r ".[] | select(.name == \"$THEME_NAME\") | .id")
           echo "Preview ID to delete: $PREVIEW_ID"
 
           if [ -n "$PREVIEW_ID" ]; then
-            echo "Deleting preview theme"
+            echo "Deleting preview theme for PR #$PR_NUMBER"
             shopify theme delete -f $PREVIEW_ID
           else
-            echo "No development theme found to delete"
+            echo "No preview theme found for PR #$PR_NUMBER"
           fi
