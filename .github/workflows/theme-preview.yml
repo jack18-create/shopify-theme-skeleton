@@ -23,15 +23,30 @@ jobs:
         id: deploy
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           THEME_NAME="PR-$PR_NUMBER"
 
-          echo "Creating/updating preview theme for PR #$PR_NUMBER"
-          THEME_INFO=$(shopify theme push --unpublished --json --theme "$THEME_NAME")
-          echo "Theme push output:"
+          echo "Checking for existing theme: $THEME_NAME"
+          THEME_LIST=$(shopify theme list --json)
+          EXISTING_THEME_ID=$(echo "$THEME_LIST" | jq -r ".[] | select(.name == \"$THEME_NAME\") | .id")
+
+          if [ -n "$EXISTING_THEME_ID" ]; then
+            echo "Updating existing theme: $EXISTING_THEME_ID"
+            THEME_INFO=$(shopify theme push $EXISTING_THEME_ID --json || echo '{"error": "Failed to update theme"}')
+          else
+            echo "Creating new theme: $THEME_NAME"
+            THEME_INFO=$(shopify theme push --unpublished --json --theme "$THEME_NAME" || echo '{"error": "Failed to create theme"}')
+          fi
+
+          echo "Theme operation output:"
           echo "$THEME_INFO" | jq '.'
+
+          if echo "$THEME_INFO" | jq -e '.error' > /dev/null; then
+            echo "Error occurred during theme operation"
+            exit 1
+          fi
 
           PREVIEW_ID=$(echo "$THEME_INFO" | jq -r '.theme.id')
           PREVIEW_URL=$(echo "$THEME_INFO" | jq -r '.theme.preview_url')
@@ -69,7 +84,7 @@ jobs:
       - name: Remove preview theme
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           THEME_NAME="PR-$PR_NUMBER"
@@ -83,7 +98,12 @@ jobs:
 
           if [ -n "$PREVIEW_ID" ]; then
             echo "Deleting preview theme for PR #$PR_NUMBER"
-            shopify theme delete -f $PREVIEW_ID
+            DELETE_RESULT=$(shopify theme delete -f $PREVIEW_ID || echo '{"error": "Failed to delete theme"}')
+            echo "$DELETE_RESULT" | jq '.'
+            if echo "$DELETE_RESULT" | jq -e '.error' > /dev/null; then
+              echo "Error occurred during theme deletion"
+              exit 1
+            fi
           else
             echo "No preview theme found for PR #$PR_NUMBER"
           fi
