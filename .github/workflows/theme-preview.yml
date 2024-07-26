@@ -7,41 +7,65 @@ on:
 jobs:
   manage-theme:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4.1.7
+
+      - name: Set up environment variables
+        run: |
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "THEME_NAME=PR-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
       - name: Debug API Authentication
         run: |
           curl -v -X GET "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/shop.json" \
             -H "Content-Type: application/json" \
             -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}"
-        env:
-          SHOP_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOP_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
 
-      # Create and deploy a PR specific Shopify theme when PR is opened/updated
-      - name: Deploy PR-specific Shopify theme
+      - name: Create and deploy PR-specific theme
         if: github.event.action != 'closed'
-        uses: matthew-petrie/shopify-theme-actions@1.2.2
-        with:
-          ACTION: "DEPLOYMENT_PREVIEW"
-          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_STORE_PASSWORD }}
-          SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
-          SHOPIFY_THEME_DIRECTORY: "." # Or your theme directory
-          SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: FALSE # Set to true if deploying to a live theme
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if theme already exists
+          THEME_ID=$(curl -s -X GET "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
+            -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
+            | jq -r '.themes[] | select(.name=="'"$THEME_NAME"'") | .id')
 
-      # Remove the previously created PR specific Shopify theme when PR is closed
-      - name: Remove PR-specific Shopify theme
+          if [ -z "$THEME_ID" ]; then
+            # Create new theme
+            THEME_ID=$(curl -s -X POST "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
+              -H "Content-Type: application/json" \
+              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
+              -d '{"theme":{"name":"'"$THEME_NAME"'","role":"unpublished"}}' \
+              | jq -r '.theme.id')
+          fi
+
+          # Upload theme files
+          for file in $(find . -type f); do
+            asset_key=${file#./}
+            curl -s -X PUT "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID/assets.json" \
+              -H "Content-Type: application/json" \
+              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
+              -d '{
+                "asset": {
+                  "key": "'"$asset_key"'",
+                  "attachment": "'"$(base64 -w 0 $file)"'"
+                }
+              }'
+          done
+
+          echo "Theme deployed: https://${{ secrets.SHOPIFY_STORE }}?preview_theme_id=$THEME_ID"
+
+      - name: Remove PR-specific theme
         if: github.event.action == 'closed'
-        uses: matthew-petrie/shopify-theme-actions@1.2.2
-        with:
-          ACTION: "REMOVE_DEPLOYMENT_PREVIEW_THEME"
-          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_STORE_PASSWORD }}
-          SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SHOPIFY_THEME_DIRECTORY: "."
+        run: |
+          THEME_ID=$(curl -s -X GET "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
+            -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
+            | jq -r '.themes[] | select(.name=="'"$THEME_NAME"'") | .id')
+
+          if [ -n "$THEME_ID" ]; then
+            curl -X DELETE "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID.json" \
+              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}"
+            echo "Theme $THEME_NAME removed"
+          else
+            echo "Theme $THEME_NAME not found"
+          fi
