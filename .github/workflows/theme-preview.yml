@@ -29,12 +29,13 @@ jobs:
         id: push_theme
         if: github.event.action != 'closed'
         run: |
-          preview_url=$(shopify theme push --store ${{ secrets.SHOPIFY_STORE }} --json | jq -r '.previewUrl')
-          theme_id=$(echo $preview_url | sed -n 's/.*preview_theme_id=\([0-9]*\).*/\1/p')
+          output=$(shopify theme push --unpublished --store ${{ secrets.SHOPIFY_STORE }} --json)
+          theme_id=$(echo "$output" | jq -r '.theme.id')
+          preview_url=$(echo "$output" | jq -r '.theme.preview_url')
           echo "PREVIEW_URL=$preview_url" >> $GITHUB_OUTPUT
           echo "THEME_ID=$theme_id" >> $GITHUB_OUTPUT
 
-      - name: Comment PR with preview link
+      - name: Comment PR with preview link and theme ID
         if: github.event.action != 'closed'
         uses: actions/github-script@v7.0.1
         with:
@@ -44,13 +45,15 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.name,
-              body: 'Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}'
+              body: `Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}
+              
+              THEME_ID=${{ steps.push_theme.outputs.THEME_ID }}`
             })
 
       - name: Remove preview theme
         if: github.event.action == 'closed'
         run: |
-          theme_id=$(cat $GITHUB_EVENT_PATH | jq -r '.pull_request.body' | sed -n 's/.*THEME_ID=\([0-9]*\).*/\1/p')
+          theme_id=$(curl -s ${{ github.event.pull_request.comments_url }} | jq -r '.[] | select(.body | contains("THEME_ID=")) | .body' | sed -n 's/.*THEME_ID=\([0-9]*\).*/\1/p' | tail -n1)
           if [ ! -z "$theme_id" ]; then
             shopify theme delete --store ${{ secrets.SHOPIFY_STORE }} -t $theme_id -f
           fi
