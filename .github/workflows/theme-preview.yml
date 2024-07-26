@@ -1,98 +1,69 @@
-name: Shopify Theme Management
+name: Shopify Theme Preview
 
 on:
   pull_request:
     types: [opened, synchronize, closed]
 
 jobs:
-  manage-theme:
+  manage-preview:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4.1.7
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: github.event.action != 'closed'
 
-      - name: Set up environment variables
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli @shopify/theme
+
+      - name: Create .env file
         run: |
-          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-          echo "THEME_NAME=PR-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "SHOPIFY_FLAG_STORE=${{ secrets.SHOPIFY_STORE }}" >> .env
+          echo "SHOPIFY_CLI_THEME_TOKEN=${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" >> .env
 
-      - name: Debug API Authentication
-        run: |
-          curl -v -X GET "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/shop.json" \
-            -H "Content-Type: application/json" \
-            -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}"
-
-      - name: Create and deploy PR-specific theme
+      - name: Push to Shopify and get preview URL
+        id: push_theme
         if: github.event.action != 'closed'
         run: |
-          # Check if theme already exists
-          THEME_ID=$(curl -s -X GET "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
-            -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
-            | jq -r '.themes[] | select(.name=="'"$THEME_NAME"'") | .id')
+          preview_url=$(shopify theme push --json | jq -r '.previewUrl')
+          theme_id=$(echo $preview_url | sed -n 's/.*preview_theme_id=\([0-9]*\).*/\1/p')
+          echo "PREVIEW_URL=$preview_url" >> $GITHUB_OUTPUT
+          echo "THEME_ID=$theme_id" >> $GITHUB_OUTPUT
 
-          if [ -z "$THEME_ID" ]; then
-            echo "Creating new theme: $THEME_NAME"
-            RESPONSE=$(curl -s -X POST "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
-              -H "Content-Type: application/json" \
-              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
-              -d '{"theme":{"name":"'"$THEME_NAME"'","role":"unpublished"}}')
-            THEME_ID=$(echo $RESPONSE | jq -r '.theme.id')
-            if [ -z "$THEME_ID" ]; then
-              echo "Failed to create theme. Response: $RESPONSE"
-              exit 1
-            fi
-          else
-            echo "Theme already exists with ID: $THEME_ID"
-          fi
+      - name: Comment PR with preview link
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: 'Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}'
+            })
 
-          echo "Uploading theme files..."
-          find . -type f \
-            -not -path "*/.*" \
-            -not -path "*/node_modules/*" \
-            -not -path "*/documentation/*" \
-            -not -name "package-lock.json" \
-            -not -name "package.json" \
-            -not -name "tailwind.config.js" \
-            -not -name "*.md" \
-            -not -name "LICENSE" \
-            -not -name "*.py" \
-            | while read -r file; do
-            asset_key=${file#./}
-            echo "Uploading $asset_key"
-            RESPONSE=$(curl -s -X PUT "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID/assets.json" \
-              -H "Content-Type: application/json" \
-              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
-              -d '{
-                "asset": {
-                  "key": "'"$asset_key"'",
-                  "attachment": "'"$(base64 -w 0 "$file")"'"
-                }
-              }')
-            if echo "$RESPONSE" | jq -e '.errors' > /dev/null; then
-              echo "Error uploading $asset_key: $RESPONSE"
-            fi
-            sleep 0.5  # Add a delay to avoid rate limiting
-          done
-
-          echo "Theme deployed: https://${{ secrets.SHOPIFY_STORE }}?preview_theme_id=$THEME_ID"
-
-      - name: Remove PR-specific theme
+      - name: Remove preview theme
         if: github.event.action == 'closed'
         run: |
-          THEME_ID=$(curl -s -X GET "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
-            -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
-            | jq -r '.themes[] | select(.name=="'"$THEME_NAME"'") | .id')
-
-          if [ -n "$THEME_ID" ]; then
-            echo "Removing theme: $THEME_NAME (ID: $THEME_ID)"
-            RESPONSE=$(curl -s -X DELETE "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID.json" \
-              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}")
-            if echo "$RESPONSE" | jq -e '.errors' > /dev/null; then
-              echo "Error removing theme: $RESPONSE"
-              exit 1
-            else
-              echo "Theme $THEME_NAME removed successfully"
-            fi
-          else
-            echo "Theme $THEME_NAME not found"
+          theme_id=$(cat $GITHUB_EVENT_PATH | jq -r '.pull_request.body' | sed -n 's/.*THEME_ID=\([0-9]*\).*/\1/p')
+          if [ ! -z "$theme_id" ]; then
+            shopify theme delete -t $theme_id -f
           fi
+
+      - name: Comment PR about removal
+        if: github.event.action == 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: 'The preview theme for this PR has been removed.'
+            })
