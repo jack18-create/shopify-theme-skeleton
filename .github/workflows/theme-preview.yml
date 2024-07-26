@@ -8,62 +8,28 @@ jobs:
   manage-preview:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        if: github.event.action != 'closed'
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+      # ... (previous steps remain the same)
 
       - name: Create .env file
         run: |
-          echo "SHOPIFY_FLAG_STORE=${{ secrets.SHOPIFY_STORE }}" >> .env
-          echo "SHOPIFY_CLI_THEME_TOKEN=${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" >> .env
+          echo "SHOPIFY_FLAG_STORE=${{ secrets.SHOPIFY_STORE }}" >> $GITHUB_ENV
+          echo "SHOPIFY_CLI_THEME_TOKEN=${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}" >> $GITHUB_ENV
 
       - name: Push to Shopify and get preview URL
         id: push_theme
         if: github.event.action != 'closed'
         run: |
-          preview_url=$(shopify theme push --json | jq -r '.previewUrl')
+          preview_url=$(shopify theme push --store ${{ secrets.SHOPIFY_STORE }} --json | jq -r '.previewUrl')
           theme_id=$(echo $preview_url | sed -n 's/.*preview_theme_id=\([0-9]*\).*/\1/p')
           echo "PREVIEW_URL=$preview_url" >> $GITHUB_OUTPUT
           echo "THEME_ID=$theme_id" >> $GITHUB_OUTPUT
 
-      - name: Comment PR with preview link
-        if: github.event.action != 'closed'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.name,
-              body: 'Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}'
-            })
+      # ... (other steps remain the same)
 
       - name: Remove preview theme
         if: github.event.action == 'closed'
         run: |
           theme_id=$(cat $GITHUB_EVENT_PATH | jq -r '.pull_request.body' | sed -n 's/.*THEME_ID=\([0-9]*\).*/\1/p')
           if [ ! -z "$theme_id" ]; then
-            shopify theme delete -t $theme_id -f
+            shopify theme delete --store ${{ secrets.SHOPIFY_STORE }} -t $theme_id -f
           fi
-
-      - name: Comment PR about removal
-        if: github.event.action == 'closed'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.name,
-              body: 'The preview theme for this PR has been removed.'
-            })
