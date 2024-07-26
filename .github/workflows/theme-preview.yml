@@ -23,15 +23,27 @@ jobs:
         id: deploy
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
         run: |
-          EXISTING_PREVIEW_ID=$(shopify theme list --json | jq -r '.themes[] | select(.role == "development") | .id')
+          # Check the structure of the theme list output
+          echo "Theme list structure:"
+          shopify theme list --json | jq '.'
+
+          # Try to find the development theme ID
+          EXISTING_PREVIEW_ID=$(shopify theme list --json | jq -r '.[] | select(.role == "development") | .id')
+          echo "Existing Preview ID: $EXISTING_PREVIEW_ID"
+
           if [ -z "$EXISTING_PREVIEW_ID" ]; then
-            PREVIEW_ID=$(shopify theme push --json --development | jq -r '.theme.id')
+            echo "Creating new development theme"
+            PREVIEW_ID=$(shopify theme push --json --development | jq -r '.id')
           else
+            echo "Using existing development theme"
             PREVIEW_ID=$EXISTING_PREVIEW_ID
             shopify theme push $PREVIEW_ID --json
           fi
+
+          echo "Preview ID: $PREVIEW_ID"
+
           PREVIEW_URL="https://${{ secrets.SHOPIFY_STORE }}/admin/themes/$PREVIEW_ID/editor"
           echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
 
@@ -62,9 +74,17 @@ jobs:
       - name: Remove preview theme
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
         run: |
-          PREVIEW_ID=$(shopify theme list --json | jq -r '.themes[] | select(.role == "development") | .id')
+          echo "Theme list structure:"
+          shopify theme list --json | jq '.'
+
+          PREVIEW_ID=$(shopify theme list --json | jq -r '.[] | select(.role == "development") | .id')
+          echo "Preview ID to delete: $PREVIEW_ID"
+
           if [ -n "$PREVIEW_ID" ]; then
+            echo "Deleting preview theme"
             shopify theme delete -f $PREVIEW_ID
+          else
+            echo "No development theme found to delete"
           fi
