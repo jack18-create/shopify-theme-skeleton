@@ -24,43 +24,8 @@ jobs:
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          THEME_NAME="PR-$PR_NUMBER"
-
-          echo "Checking for existing theme: $THEME_NAME"
-          THEME_LIST=$(shopify theme list --json)
-          EXISTING_THEME=$(echo "$THEME_LIST" | jq -r ".[] | select(.name == \"$THEME_NAME\" and .role == \"unpublished\")")
-          EXISTING_THEME_ID=$(echo "$EXISTING_THEME" | jq -r '.id')
-
-          if [ -n "$EXISTING_THEME_ID" ] && [ "$EXISTING_THEME_ID" != "null" ]; then
-            echo "Updating existing unpublished theme: $EXISTING_THEME_ID"
-            THEME_INFO=$(shopify theme push --theme $EXISTING_THEME_ID --json || echo '{"error": "Failed to update theme"}')
-          else
-            echo "Creating new unpublished theme: $THEME_NAME"
-            THEME_INFO=$(shopify theme push --unpublished --json --theme "$THEME_NAME" || echo '{"error": "Failed to create theme"}')
-          fi
-
-          echo "Theme operation output:"
-          echo "$THEME_INFO" | jq '.'
-
-          if echo "$THEME_INFO" | jq -e '.error' > /dev/null; then
-            echo "Error occurred during theme operation"
-            exit 1
-          fi
-
-          PREVIEW_ID=$(echo "$THEME_INFO" | jq -r '.theme.id')
-          PREVIEW_URL=$(echo "$THEME_INFO" | jq -r '.theme.preview_url')
-
-          if [ -z "$PREVIEW_URL" ] || [ "$PREVIEW_URL" = "null" ]; then
-            PREVIEW_URL="https://${{ secrets.SHOPIFY_STORE }}/admin/themes/$PREVIEW_ID/editor"
-          fi
-
-          echo "Preview ID: $PREVIEW_ID"
-          echo "Preview URL: $PREVIEW_URL"
-
-          echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
-          echo "preview_id=$PREVIEW_ID" >> $GITHUB_OUTPUT
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node .github/scripts/shopify-theme-preview.js
 
       - name: Comment PR
         uses: actions/github-script@v6
@@ -78,6 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true || github.event.action == 'closed'
     steps:
+      - uses: actions/checkout@v3
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -90,25 +57,5 @@ jobs:
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          THEME_NAME="PR-$PR_NUMBER"
-
-          echo "Listing themes:"
-          THEME_LIST=$(shopify theme list --json)
-          echo "$THEME_LIST" | jq '.'
-
-          PREVIEW_ID=$(echo "$THEME_LIST" | jq -r ".[] | select(.name == \"$THEME_NAME\" and .role == \"unpublished\") | .id")
-          echo "Preview ID to delete: $PREVIEW_ID"
-
-          if [ -n "$PREVIEW_ID" ] && [ "$PREVIEW_ID" != "null" ]; then
-            echo "Deleting unpublished preview theme for PR #$PR_NUMBER"
-            DELETE_RESULT=$(shopify theme delete --theme $PREVIEW_ID -f || echo '{"error": "Failed to delete theme"}')
-            echo "$DELETE_RESULT" | jq '.'
-            if echo "$DELETE_RESULT" | jq -e '.error' > /dev/null; then
-              echo "Error occurred during theme deletion"
-              exit 1
-            fi
-          else
-            echo "No unpublished preview theme found for PR #$PR_NUMBER"
-          fi
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node .github/scripts/shopify-theme-cleanup.js
