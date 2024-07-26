@@ -25,27 +25,40 @@ jobs:
           echo "SHOPIFY_FLAG_STORE=${{ secrets.SHOPIFY_STORE }}" >> $GITHUB_ENV
           echo "SHOPIFY_CLI_THEME_TOKEN=${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}" >> $GITHUB_ENV
 
-      - name: Push to Shopify and get preview URL
-        id: push_theme
-        if: github.event.action != 'closed'
-        run: |
-          preview_url=$(shopify theme push --store ${{ secrets.SHOPIFY_STORE }} --json | jq -r '.previewUrl')
-          theme_id=$(echo $preview_url | sed -n 's/.*preview_theme_id=\([0-9]*\).*/\1/p')
-          echo "PREVIEW_URL=$preview_url" >> $GITHUB_OUTPUT
-          echo "THEME_ID=$theme_id" >> $GITHUB_OUTPUT
-
-          - name: Comment PR with preview link
+          - name: Push to Shopify and get preview URL
+          id: push_theme
           if: github.event.action != 'closed'
-          uses: actions/github-script@v6
-          with:
-            github-token: ${{secrets.GITHUB_TOKEN}}
-            script: |
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.name,
-                body: 'Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}'
-              })
+          run: |
+            output=$(shopify theme push --store ${{ secrets.SHOPIFY_STORE }} --json)
+            echo "Raw output: $output"
+            if echo "$output" | jq -e . >/dev/null 2>&1; then
+              preview_url=$(echo "$output" | jq -r '.previewUrl')
+              if [ -n "$preview_url" ]; then
+                theme_id=$(echo $preview_url | sed -n 's/.*preview_theme_id=\([0-9]*\).*/\1/p')
+                echo "PREVIEW_URL=$preview_url" >> $GITHUB_OUTPUT
+                echo "THEME_ID=$theme_id" >> $GITHUB_OUTPUT
+              else
+                echo "Error: PreviewUrl not found in the JSON output"
+                exit 1
+              fi
+            else
+              echo "Error: Invalid JSON output from shopify theme push"
+              echo "Output: $output"
+              exit 1
+            fi
+
+      - name: Comment PR with preview link
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: 'Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}'
+            })
 
       - name: Remove preview theme
         if: github.event.action == 'closed'
