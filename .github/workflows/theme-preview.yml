@@ -46,7 +46,13 @@ jobs:
           fi
 
           echo "Uploading theme files..."
-          find . -type f | while read -r file; do
+          find . -type f \
+            -not -path "*/.*" \
+            -not -path "*/node_modules/*" \
+            -not -name "package-lock.json" \
+            -not -name "package.json" \
+            -not -name "tailwind.config.js" \
+            | while read -r file; do
             asset_key=${file#./}
             echo "Uploading $asset_key"
             RESPONSE=$(curl -s -X PUT "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID/assets.json" \
@@ -61,6 +67,7 @@ jobs:
             if echo "$RESPONSE" | jq -e '.errors' > /dev/null; then
               echo "Error uploading $asset_key: $RESPONSE"
             fi
+            sleep 0.5  # Add a delay to avoid rate limiting
           done
 
           echo "Theme deployed: https://${{ secrets.SHOPIFY_STORE }}?preview_theme_id=$THEME_ID"
