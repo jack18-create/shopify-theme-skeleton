@@ -28,7 +28,7 @@ jobs:
         with:
           ACTION: "DEPLOYMENT_PREVIEW"
           SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_STORE_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           SHOPIFY_THEME_DIRECTORY: "." # Or your theme directory
           SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: FALSE # Set to true if deploying to a live theme
@@ -41,7 +41,7 @@ jobs:
         with:
           ACTION: "REMOVE_DEPLOYMENT_PREVIEW_THEME"
           SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_STORE_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHOPIFY_THEME_DIRECTORY: "."
