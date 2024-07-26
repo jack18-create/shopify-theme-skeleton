@@ -14,12 +14,12 @@ jobs:
 
       - name: Debug API Authentication
         run: |
-          curl -v -X GET "https://${{ secrets.SHOP_STORE }}/admin/api/2024-10/shop.json" \
+          curl -v -X GET "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/shop.json" \
             -H "Content-Type: application/json" \
-            -H "X-Shopify-Access-Token: ${{ secrets.SHOP_ACCESS_TOKEN }}"
+            -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}"
         env:
-          SHOP_STORE: ${{ secrets.SHOP_STORE }}
-          SHOP_ACCESS_TOKEN: ${{ secrets.SHOP_ACCESS_TOKEN }}
+          SHOP_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOP_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
 
       # Create and deploy a PR specific Shopify theme when PR is opened/updated
       - name: Deploy PR-specific Shopify theme
@@ -27,11 +27,11 @@ jobs:
         uses: matthew-petrie/shopify-theme-actions@1.2.2
         with:
           ACTION: "DEPLOYMENT_PREVIEW"
-          SHOPIFY_STORE_URL: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           SHOPIFY_THEME_DIRECTORY: "." # Or your theme directory
-          SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false # Set to true if deploying to a live theme
+          # SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false # Set to true if deploying to a live theme
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Remove the previously created PR specific Shopify theme when PR is closed
@@ -40,7 +40,7 @@ jobs:
         uses: matthew-petrie/shopify-theme-actions@1.2.2
         with:
           ACTION: "REMOVE_DEPLOYMENT_PREVIEW_THEME"
-          SHOPIFY_STORE_URL: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
