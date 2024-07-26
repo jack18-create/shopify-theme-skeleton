@@ -36,9 +36,9 @@ jobs:
 
       - name: Comment PR with preview link
         if: github.event.action != 'closed'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7.0.1
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -55,15 +55,15 @@ jobs:
             shopify theme delete --store ${{ secrets.SHOPIFY_STORE }} -t $theme_id -f
           fi
 
-          - name: Comment PR about removal
-          if: github.event.action == 'closed'
-          uses: actions/github-script@v6
-          with:
-            github-token: ${{secrets.GITHUB_TOKEN}}
-            script: |
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.name,
-                body: 'The preview theme for this PR has been removed.'
-              })
+      - name: Comment PR about removal
+        if: github.event.action == 'closed'
+        uses: actions/github-script@v7.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: 'The preview theme for this PR has been removed.'
+            })
