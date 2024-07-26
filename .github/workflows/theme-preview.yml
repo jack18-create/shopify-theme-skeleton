@@ -31,26 +31,36 @@ jobs:
             | jq -r '.themes[] | select(.name=="'"$THEME_NAME"'") | .id')
 
           if [ -z "$THEME_ID" ]; then
-            # Create new theme
-            THEME_ID=$(curl -s -X POST "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
+            echo "Creating new theme: $THEME_NAME"
+            RESPONSE=$(curl -s -X POST "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes.json" \
               -H "Content-Type: application/json" \
               -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
-              -d '{"theme":{"name":"'"$THEME_NAME"'","role":"unpublished"}}' \
-              | jq -r '.theme.id')
+              -d '{"theme":{"name":"'"$THEME_NAME"'","role":"unpublished"}}')
+            THEME_ID=$(echo $RESPONSE | jq -r '.theme.id')
+            if [ -z "$THEME_ID" ]; then
+              echo "Failed to create theme. Response: $RESPONSE"
+              exit 1
+            fi
+          else
+            echo "Theme already exists with ID: $THEME_ID"
           fi
 
-          # Upload theme files
-          for file in $(find . -type f); do
+          echo "Uploading theme files..."
+          find . -type f | while read -r file; do
             asset_key=${file#./}
-            curl -s -X PUT "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID/assets.json" \
+            echo "Uploading $asset_key"
+            RESPONSE=$(curl -s -X PUT "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID/assets.json" \
               -H "Content-Type: application/json" \
               -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}" \
               -d '{
                 "asset": {
                   "key": "'"$asset_key"'",
-                  "attachment": "'"$(base64 -w 0 $file)"'"
+                  "attachment": "'"$(base64 -w 0 "$file")"'"
                 }
-              }'
+              }')
+            if echo "$RESPONSE" | jq -e '.errors' > /dev/null; then
+              echo "Error uploading $asset_key: $RESPONSE"
+            fi
           done
 
           echo "Theme deployed: https://${{ secrets.SHOPIFY_STORE }}?preview_theme_id=$THEME_ID"
@@ -63,9 +73,15 @@ jobs:
             | jq -r '.themes[] | select(.name=="'"$THEME_NAME"'") | .id')
 
           if [ -n "$THEME_ID" ]; then
-            curl -X DELETE "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID.json" \
-              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}"
-            echo "Theme $THEME_NAME removed"
+            echo "Removing theme: $THEME_NAME (ID: $THEME_ID)"
+            RESPONSE=$(curl -s -X DELETE "https://${{ secrets.SHOPIFY_STORE }}/admin/api/2024-07/themes/$THEME_ID.json" \
+              -H "X-Shopify-Access-Token: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}")
+            if echo "$RESPONSE" | jq -e '.errors' > /dev/null; then
+              echo "Error removing theme: $RESPONSE"
+              exit 1
+            else
+              echo "Theme $THEME_NAME removed successfully"
+            fi
           else
             echo "Theme $THEME_NAME not found"
           fi
