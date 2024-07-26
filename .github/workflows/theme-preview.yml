@@ -8,7 +8,17 @@ jobs:
   manage-preview:
     runs-on: ubuntu-latest
     steps:
-      # ... (previous steps remain the same)
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: github.event.action != 'closed'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli @shopify/theme
 
       - name: Create .env file
         run: |
@@ -24,7 +34,18 @@ jobs:
           echo "PREVIEW_URL=$preview_url" >> $GITHUB_OUTPUT
           echo "THEME_ID=$theme_id" >> $GITHUB_OUTPUT
 
-      # ... (other steps remain the same)
+          - name: Comment PR with preview link
+          if: github.event.action != 'closed'
+          uses: actions/github-script@v6
+          with:
+            github-token: ${{secrets.GITHUB_TOKEN}}
+            script: |
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.name,
+                body: 'Preview link for this PR: ${{ steps.push_theme.outputs.PREVIEW_URL }}'
+              })
 
       - name: Remove preview theme
         if: github.event.action == 'closed'
@@ -33,3 +54,16 @@ jobs:
           if [ ! -z "$theme_id" ]; then
             shopify theme delete --store ${{ secrets.SHOPIFY_STORE }} -t $theme_id -f
           fi
+
+          - name: Comment PR about removal
+          if: github.event.action == 'closed'
+          uses: actions/github-script@v6
+          with:
+            github-token: ${{secrets.GITHUB_TOKEN}}
+            script: |
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.name,
+                body: 'The preview theme for this PR has been removed.'
+              })
