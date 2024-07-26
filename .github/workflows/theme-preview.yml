@@ -49,9 +49,13 @@ jobs:
           find . -type f \
             -not -path "*/.*" \
             -not -path "*/node_modules/*" \
+            -not -path "*/documentation/*" \
             -not -name "package-lock.json" \
             -not -name "package.json" \
             -not -name "tailwind.config.js" \
+            -not -name "*.md" \
+            -not -name "LICENSE" \
+            -not -name "*.py" \
             | while read -r file; do
             asset_key=${file#./}
             echo "Uploading $asset_key"
