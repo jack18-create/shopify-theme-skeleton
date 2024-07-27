@@ -1,6 +1,6 @@
 // .github/scripts/update-theme-status.js
 
-const { Octokit } = require("@octokit/rest");
+const { Octokit } = require("octokit");
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
@@ -8,7 +8,7 @@ const issue_number = parseInt(process.env.PR_NUMBER);
 
 async function updateThemeStatus() {
   try {
-    await octokit.issues.createComment({
+    await octokit.rest.issues.createComment({
       owner,
       repo,
       issue_number,

@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npm install @octokit/rest
+          npm install octokit
 
       - name: Check theme status
         id: theme_status
@@ -87,7 +87,7 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        run: npm install @octokit/rest
+        run: npm install octokit
 
       - name: Remove preview theme
         env:

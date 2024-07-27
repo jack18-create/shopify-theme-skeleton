@@ -1,6 +1,6 @@
 // .github/scripts/check-theme-status.js
 
-const { Octokit } = require("@octokit/rest");
+const { Octokit } = require("octokit");
 const fs = require("fs");
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -9,7 +9,7 @@ const issue_number = parseInt(process.env.PR_NUMBER);
 
 async function checkThemeStatus() {
   try {
-    const { data: comments } = await octokit.issues.listComments({
+    const { data: comments } = await octokit.rest.issues.listComments({
       owner,
       repo,
       issue_number,
@@ -26,7 +26,9 @@ async function checkThemeStatus() {
 
     const shouldCreatePreview =
       !removedComment ||
-      (previewComment && previewComment.created_at > removedComment.created_at);
+      (previewComment &&
+        new Date(previewComment.created_at) >
+          new Date(removedComment.created_at));
 
     if (process.env.GITHUB_OUTPUT) {
       fs.appendFileSync(
