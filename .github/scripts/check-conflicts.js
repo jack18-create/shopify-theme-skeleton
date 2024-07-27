@@ -47,8 +47,8 @@ function checkRelevantChanges() {
       "sections/",
       "snippets/",
       "templates/",
+      "src/",
       "tailwind.config.js",
-      "theme.liquid",
     ];
 
     const changedFiles = diffOutput
