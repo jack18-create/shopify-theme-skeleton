@@ -1,16 +1,17 @@
-const { execSync } = require("child_process");
+const fetch = require("node-fetch");
 const fs = require("fs");
 
 const SHOPIFY_STORE = process.env.SHOPIFY_FLAG_STORE;
+const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 const PR_NUMBER = process.env.PR_NUMBER;
 const THEME_NAME = `PR-${PR_NUMBER}`;
 
 function checkEnvironmentVariables() {
   const requiredVars = [
     "SHOPIFY_FLAG_STORE",
+    "SHOPIFY_ACCESS_TOKEN",
     "PR_NUMBER",
     "GITHUB_OUTPUT",
-    "SHOPIFY_ACCESS_TOKEN",
   ];
   for (const varName of requiredVars) {
     if (!process.env[varName]) {
@@ -19,42 +20,48 @@ function checkEnvironmentVariables() {
   }
 }
 
-function runShopifyCommand(command) {
-  try {
-    const fullCommand = `SHOPIFY_ACCESS_TOKEN=${process.env.SHOPIFY_ACCESS_TOKEN} SHOPIFY_FLAG_STORE=${process.env.SHOPIFY_FLAG_STORE} shopify ${command}`;
-    const output = execSync(fullCommand, { encoding: "utf8" });
-    return JSON.parse(output);
-  } catch (error) {
-    console.error(`Error running command: ${command}`);
-    console.error(error.message);
-    throw error;
+async function shopifyApiRequest(endpoint, method = "GET", body = null) {
+  const url = `https://${SHOPIFY_STORE}/admin/api/2024-07/${endpoint}`;
+  const options = {
+    method,
+    headers: {
+      "X-Shopify-Access-Token": SHOPIFY_ACCESS_TOKEN,
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
   }
+
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(`Shopify API request failed: ${response.statusText}`);
+  }
+  return response.json();
 }
 
-function getExistingTheme() {
-  const themeList = runShopifyCommand("theme list --json");
-  return themeList.find(
+async function getExistingTheme() {
+  const { themes } = await shopifyApiRequest("themes.json");
+  return themes.find(
     (theme) => theme.name === THEME_NAME && theme.role === "unpublished"
   );
 }
 
-function createOrUpdateTheme() {
-  const existingTheme = getExistingTheme();
+async function createOrUpdateTheme() {
+  const existingTheme = await getExistingTheme();
 
-  let themeInfo;
   if (existingTheme) {
     console.log(`Updating existing unpublished theme: ${existingTheme.id}`);
-    themeInfo = runShopifyCommand(
-      `theme push --theme ${existingTheme.id} --json`
-    );
+    return shopifyApiRequest(`themes/${existingTheme.id}.json`, "PUT", {
+      theme: { id: existingTheme.id },
+    });
   } else {
     console.log(`Creating new unpublished theme: ${THEME_NAME}`);
-    themeInfo = runShopifyCommand(
-      `theme push --unpublished --json --theme "${THEME_NAME}"`
-    );
+    return shopifyApiRequest("themes.json", "POST", {
+      theme: { name: THEME_NAME, role: "unpublished" },
+    });
   }
-
-  return themeInfo;
 }
 
 function appendToOutput(key, value) {
@@ -65,7 +72,7 @@ function appendToOutput(key, value) {
   }
 }
 
-function main() {
+async function main() {
   try {
     console.log(`SHOPIFY_STORE: ${SHOPIFY_STORE}`);
     console.log(`PR_NUMBER: ${PR_NUMBER}`);
@@ -73,22 +80,17 @@ function main() {
 
     checkEnvironmentVariables();
 
-    const themeInfo = createOrUpdateTheme();
-    const previewUrl =
-      themeInfo.theme.preview_url ||
-      `https://${SHOPIFY_STORE}/admin/themes/${themeInfo.theme.id}/editor`;
-    const editorUrl =
-      themeInfo.theme.editor_url ||
-      `https://${SHOPIFY_STORE}/admin/themes/${themeInfo.theme.id}/editor`;
+    const { theme } = await createOrUpdateTheme();
+    const previewUrl = `https://${SHOPIFY_STORE}?preview_theme_id=${theme.id}`;
+    const editorUrl = `https://${SHOPIFY_STORE}/admin/themes/${theme.id}/editor`;
 
-    console.log(`Theme ID: ${themeInfo.theme.id}`);
+    console.log(`Theme ID: ${theme.id}`);
     console.log(`Preview URL: ${previewUrl}`);
     console.log(`Editor URL: ${editorUrl}`);
 
-    // Set output for GitHub Actions
     appendToOutput("preview_url", previewUrl);
     appendToOutput("editor_url", editorUrl);
-    appendToOutput("theme_id", themeInfo.theme.id);
+    appendToOutput("theme_id", theme.id);
   } catch (error) {
     console.error("Error:", error.message);
     process.exit(1);
