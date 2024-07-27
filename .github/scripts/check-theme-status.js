@@ -1,19 +1,37 @@
 // .github/scripts/check-theme-status.js
 
-const { Octokit } = require("octokit");
+const https = require("https");
 const fs = require("fs");
 
-const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
 const issue_number = parseInt(process.env.PR_NUMBER);
 
+function makeRequest(options) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", (chunk) => (data += chunk));
+      res.on("end", () => resolve(JSON.parse(data)));
+    });
+    req.on("error", reject);
+    req.end();
+  });
+}
+
 async function checkThemeStatus() {
   try {
-    const { data: comments } = await octokit.rest.issues.listComments({
-      owner,
-      repo,
-      issue_number,
-    });
+    const options = {
+      hostname: "api.github.com",
+      path: `/repos/${owner}/${repo}/issues/${issue_number}/comments`,
+      method: "GET",
+      headers: {
+        "User-Agent": "Node.js",
+        Authorization: `token ${process.env.GITHUB_TOKEN}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    };
+
+    const comments = await makeRequest(options);
 
     const removedComment = comments
       .reverse()
