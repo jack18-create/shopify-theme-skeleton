@@ -1,4 +1,4 @@
-const https = require("https");
+const fetch = require("node-fetch");
 const fs = require("fs");
 
 const SHOPIFY_STORE = process.env.SHOPIFY_FLAG_STORE;
@@ -20,47 +20,25 @@ function checkEnvironmentVariables() {
   }
 }
 
-function shopifyApiRequest(endpoint, method = "GET", body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: SHOPIFY_STORE,
-      port: 443,
-      path: `/admin/api/2023-04/${endpoint}`,
-      method: method,
-      headers: {
-        "X-Shopify-Access-Token": SHOPIFY_ACCESS_TOKEN,
-        "Content-Type": "application/json",
-      },
-    };
+async function shopifyApiRequest(endpoint, method = "GET", body = null) {
+  const url = `https://${SHOPIFY_STORE}/admin/api/2024-07/${endpoint}`;
+  const options = {
+    method,
+    headers: {
+      "X-Shopify-Access-Token": SHOPIFY_ACCESS_TOKEN,
+      "Content-Type": "application/json",
+    },
+  };
 
-    const req = https.request(options, (res) => {
-      let data = "";
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
 
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-
-      res.on("end", () => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(JSON.parse(data));
-        } else {
-          reject(
-            new Error(`Request failed with status code ${res.statusCode}`)
-          );
-        }
-      });
-    });
-
-    req.on("error", (error) => {
-      reject(error);
-    });
-
-    if (body) {
-      req.write(JSON.stringify(body));
-    }
-
-    req.end();
-  });
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(`Shopify API request failed: ${response.statusText}`);
+  }
+  return response.json();
 }
 
 async function getExistingTheme() {
