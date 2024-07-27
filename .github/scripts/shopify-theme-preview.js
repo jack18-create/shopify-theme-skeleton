@@ -1,3 +1,5 @@
+// .github/scripts/shopify-theme-preview.js
+
 const fetch = require("node-fetch");
 const fs = require("fs");
 
