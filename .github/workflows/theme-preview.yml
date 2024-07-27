@@ -2,29 +2,50 @@ name: Shopify Theme Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
 
 jobs:
   preview:
     runs-on: ubuntu-latest
-    if: github.event.action != 'closed'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # This ensures all history is fetched
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: "18"
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install @octokit/rest
+
+      - name: Check theme status
+        id: theme_status
+        run: node .github/scripts/check-theme-status.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+
+      - name: Check for conflicts and relevant changes
+        id: checks
+        if: steps.theme_status.outputs.should_create_preview == 'true'
+        run: node .github/scripts/check-conflicts.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
 
       - name: Deploy theme preview
+        if: steps.theme_status.outputs.should_create_preview == 'true' && steps.checks.outputs.has_conflicts == 'false' && steps.checks.outputs.has_relevant_changes == 'true'
         id: deploy
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
         run: node .github/scripts/shopify-theme-preview.js
 
       - name: Comment PR
@@ -32,16 +53,31 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            const fs = require('fs');
+            const output = fs.readFileSync(process.env.GITHUB_OUTPUT, 'utf8');
+            const shouldCreatePreview = output.includes('should_create_preview=true');
+            const hasConflicts = output.includes('has_conflicts=true');
+            const hasRelevantChanges = output.includes('has_relevant_changes=true');
+            let commentBody;
+            if (!shouldCreatePreview) {
+              commentBody = 'Preview creation is disabled. Use !preview to enable.';
+            } else if (hasConflicts) {
+              commentBody = 'Conflicts detected. Please resolve conflicts before creating a preview.';
+            } else if (!hasRelevantChanges) {
+              commentBody = 'No relevant theme changes detected. Skipping preview creation.';
+            } else {
+              commentBody = 'Preview link: ${{ steps.deploy.outputs.preview_url }}\nTheme ID: ${{ steps.deploy.outputs.theme_id }}\nEditor URL: ${{ steps.deploy.outputs.editor_url }}';
+            }
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Preview link: ${{ steps.deploy.outputs.preview_url }}\nTheme ID: ${{ steps.deploy.outputs.theme_id }}\nEditor URL: ${{ steps.deploy.outputs.editor_url }}'
+              body: commentBody
             })
 
   cleanup:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true || github.event.action == 'closed'
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '!remove')
     steps:
       - uses: actions/checkout@v3
 
@@ -50,9 +86,18 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Install dependencies
+        run: npm install @octokit/rest
+
       - name: Remove preview theme
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.issue.number }}
         run: node .github/scripts/shopify-theme-cleanup.js
+
+      - name: Update theme status
+        run: node .github/scripts/update-theme-status.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}

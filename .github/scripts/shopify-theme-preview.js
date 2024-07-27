@@ -8,20 +8,6 @@ const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 const PR_NUMBER = process.env.PR_NUMBER;
 const THEME_NAME = `PR-${PR_NUMBER}`;
 
-function checkEnvironmentVariables() {
-  const requiredVars = [
-    "SHOPIFY_FLAG_STORE",
-    "SHOPIFY_ACCESS_TOKEN",
-    "PR_NUMBER",
-    "GITHUB_OUTPUT",
-  ];
-  for (const varName of requiredVars) {
-    if (!process.env[varName]) {
-      throw new Error(`Required environment variable ${varName} is not set`);
-    }
-  }
-}
-
 function shopifyApiRequest(endpoint, method = "GET", body = null) {
   return new Promise((resolve, reject) => {
     const options = {
@@ -102,8 +88,6 @@ async function main() {
     console.log(`SHOPIFY_STORE: ${SHOPIFY_STORE}`);
     console.log(`PR_NUMBER: ${PR_NUMBER}`);
     console.log(`THEME_NAME: ${THEME_NAME}`);
-
-    checkEnvironmentVariables();
 
     const { theme } = await createOrUpdateTheme();
     const previewUrl = `https://${SHOPIFY_STORE}?preview_theme_id=${theme.id}`;

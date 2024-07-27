@@ -70,14 +70,21 @@ async function removePreviewTheme() {
     console.log(`Deleting unpublished preview theme for PR #${PR_NUMBER}`);
     await deleteTheme(previewTheme.id);
     console.log(`Successfully deleted theme ${previewTheme.id}`);
+    return true;
   } else {
     console.log(`No unpublished preview theme found for PR #${PR_NUMBER}`);
+    return false;
   }
 }
 
 async function main() {
   try {
-    await removePreviewTheme();
+    const removed = await removePreviewTheme();
+    if (removed) {
+      console.log("Preview theme removed successfully.");
+    } else {
+      console.log("No preview theme to remove.");
+    }
   } catch (error) {
     console.error("Error:", error.message);
     process.exit(1);
