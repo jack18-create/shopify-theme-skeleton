@@ -1,5 +1,3 @@
-// .github/scripts/shopify-theme-preview.js
-
 const { execSync } = require("child_process");
 const fs = require("fs");
 
@@ -7,13 +5,34 @@ const SHOPIFY_STORE = process.env.SHOPIFY_FLAG_STORE;
 const PR_NUMBER = process.env.PR_NUMBER;
 const THEME_NAME = `PR-${PR_NUMBER}`;
 
+function checkEnvironmentVariables() {
+  const requiredVars = ["SHOPIFY_FLAG_STORE", "PR_NUMBER", "GITHUB_OUTPUT"];
+  for (const varName of requiredVars) {
+    if (!process.env[varName]) {
+      throw new Error(`Required environment variable ${varName} is not set`);
+    }
+  }
+}
+
+function authenticateShopifyCLI() {
+  try {
+    execSync(`shopify auth login --store ${SHOPIFY_STORE}`, {
+      stdio: "inherit",
+    });
+  } catch (error) {
+    console.error("Failed to authenticate Shopify CLI");
+    throw error;
+  }
+}
+
 function runShopifyCommand(command) {
   try {
-    return JSON.parse(execSync(`shopify ${command}`, { encoding: "utf8" }));
+    const output = execSync(`shopify ${command}`, { encoding: "utf8" });
+    return JSON.parse(output);
   } catch (error) {
     console.error(`Error running command: shopify ${command}`);
     console.error(error.message);
-    return { error: error.message };
+    throw error;
   }
 }
 
@@ -40,19 +59,18 @@ function createOrUpdateTheme() {
     );
   }
 
-  if (themeInfo.error) {
-    throw new Error(
-      `Failed to ${existingTheme ? "update" : "create"} theme: ${
-        themeInfo.error
-      }`
-    );
-  }
-
   return themeInfo;
 }
 
 function main() {
   try {
+    console.log(`SHOPIFY_STORE: ${SHOPIFY_STORE}`);
+    console.log(`PR_NUMBER: ${PR_NUMBER}`);
+    console.log(`THEME_NAME: ${THEME_NAME}`);
+
+    checkEnvironmentVariables();
+    authenticateShopifyCLI();
+
     const themeInfo = createOrUpdateTheme();
     const previewUrl =
       themeInfo.theme.preview_url ||
