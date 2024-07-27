@@ -52,18 +52,16 @@ async function checkThemeStatus() {
 
     const comments = await makeRequest(commentsOptions);
 
-    const removeComment = comments
-      .reverse()
-      .find((comment) => comment.body.includes("!remove"));
-    const previewComment = comments
-      .reverse()
-      .find((comment) => comment.body.includes("!preview"));
+    const sortedComments = comments.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+    const lastRelevantComment = sortedComments.find(
+      (comment) =>
+        comment.body.includes("!remove") || comment.body.includes("!preview")
+    );
 
     const shouldCreatePreview =
-      !removeComment ||
-      (previewComment &&
-        new Date(previewComment.created_at) >
-          new Date(removeComment.created_at));
+      lastRelevantComment && lastRelevantComment.body.includes("!preview");
 
     // Check if a preview theme already exists
     const themesOptions = {
