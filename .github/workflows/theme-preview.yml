@@ -9,18 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.action != 'closed'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
 
       - name: Install dependencies
-        run: npm install node-fetch@3
-
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+        run: npm install
 
       - name: Deploy theme preview
         id: deploy
@@ -39,7 +36,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Preview link: ${{ steps.deploy.outputs.preview_url }}\nTheme ID: ${{ steps.deploy.outputs.preview_id }}'
+              body: 'Preview link: ${{ steps.deploy.outputs.preview_url }}\nTheme ID: ${{ steps.deploy.outputs.theme_id }}\nEditor URL: ${{ steps.deploy.outputs.editor_url }}'
             })
 
   cleanup:
@@ -52,9 +49,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
 
       - name: Remove preview theme
         env:
