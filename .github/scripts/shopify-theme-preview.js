@@ -6,7 +6,12 @@ const PR_NUMBER = process.env.PR_NUMBER;
 const THEME_NAME = `PR-${PR_NUMBER}`;
 
 function checkEnvironmentVariables() {
-  const requiredVars = ["SHOPIFY_FLAG_STORE", "PR_NUMBER", "GITHUB_OUTPUT"];
+  const requiredVars = [
+    "SHOPIFY_FLAG_STORE",
+    "PR_NUMBER",
+    "GITHUB_OUTPUT",
+    "SHOPIFY_ACCESS_TOKEN",
+  ];
   for (const varName of requiredVars) {
     if (!process.env[varName]) {
       throw new Error(`Required environment variable ${varName} is not set`);
@@ -14,23 +19,13 @@ function checkEnvironmentVariables() {
   }
 }
 
-function authenticateShopifyCLI() {
-  try {
-    execSync(`shopify auth login --store ${SHOPIFY_STORE}`, {
-      stdio: "inherit",
-    });
-  } catch (error) {
-    console.error("Failed to authenticate Shopify CLI");
-    throw error;
-  }
-}
-
 function runShopifyCommand(command) {
   try {
-    const output = execSync(`shopify ${command}`, { encoding: "utf8" });
+    const fullCommand = `SHOPIFY_ACCESS_TOKEN=${process.env.SHOPIFY_ACCESS_TOKEN} SHOPIFY_FLAG_STORE=${process.env.SHOPIFY_FLAG_STORE} shopify ${command}`;
+    const output = execSync(fullCommand, { encoding: "utf8" });
     return JSON.parse(output);
   } catch (error) {
-    console.error(`Error running command: shopify ${command}`);
+    console.error(`Error running command: ${command}`);
     console.error(error.message);
     throw error;
   }
@@ -62,6 +57,14 @@ function createOrUpdateTheme() {
   return themeInfo;
 }
 
+function appendToOutput(key, value) {
+  if (process.env.GITHUB_OUTPUT) {
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `${key}=${value}\n`);
+  } else {
+    console.log(`${key}=${value}`);
+  }
+}
+
 function main() {
   try {
     console.log(`SHOPIFY_STORE: ${SHOPIFY_STORE}`);
@@ -69,7 +72,6 @@ function main() {
     console.log(`THEME_NAME: ${THEME_NAME}`);
 
     checkEnvironmentVariables();
-    authenticateShopifyCLI();
 
     const themeInfo = createOrUpdateTheme();
     const previewUrl =
@@ -84,12 +86,9 @@ function main() {
     console.log(`Editor URL: ${editorUrl}`);
 
     // Set output for GitHub Actions
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `preview_url=${previewUrl}\n`);
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `editor_url=${editorUrl}\n`);
-    fs.appendFileSync(
-      process.env.GITHUB_OUTPUT,
-      `theme_id=${themeInfo.theme.id}\n`
-    );
+    appendToOutput("preview_url", previewUrl);
+    appendToOutput("editor_url", editorUrl);
+    appendToOutput("theme_id", themeInfo.theme.id);
   } catch (error) {
     console.error("Error:", error.message);
     process.exit(1);
