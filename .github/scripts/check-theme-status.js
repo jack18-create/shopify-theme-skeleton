@@ -20,7 +20,26 @@ function makeRequest(options) {
 
 async function checkThemeStatus() {
   try {
-    const options = {
+    // Check if the pull request is open
+    const prOptions = {
+      hostname: "api.github.com",
+      path: `/repos/${owner}/${repo}/pulls/${issue_number}`,
+      method: "GET",
+      headers: {
+        "User-Agent": "Node.js",
+        Authorization: `token ${process.env.GITHUB_TOKEN}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    };
+
+    const prData = await makeRequest(prOptions);
+    if (prData.state !== "open") {
+      console.log("Pull request is not open. Preview creation disabled.");
+      return false;
+    }
+
+    // Check comments for !remove and !preview
+    const commentsOptions = {
       hostname: "api.github.com",
       path: `/repos/${owner}/${repo}/issues/${issue_number}/comments`,
       method: "GET",
@@ -31,31 +50,53 @@ async function checkThemeStatus() {
       },
     };
 
-    const comments = await makeRequest(options);
+    const comments = await makeRequest(commentsOptions);
 
-    const removedComment = comments
+    const removeComment = comments
       .reverse()
-      .find((comment) =>
-        comment.body.includes("Preview theme has been removed")
-      );
+      .find((comment) => comment.body.includes("!remove"));
     const previewComment = comments
       .reverse()
       .find((comment) => comment.body.includes("!preview"));
 
     const shouldCreatePreview =
-      !removedComment ||
+      !removeComment ||
       (previewComment &&
         new Date(previewComment.created_at) >
-          new Date(removedComment.created_at));
+          new Date(removeComment.created_at));
+
+    // Check if a preview theme already exists
+    const themesOptions = {
+      hostname: process.env.SHOPIFY_FLAG_STORE,
+      path: "/admin/api/2024-07/themes.json",
+      method: "GET",
+      headers: {
+        "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const { themes } = await makeRequest(themesOptions);
+    const existingTheme = themes.find(
+      (theme) =>
+        theme.name === `PR-${issue_number}` && theme.role === "unpublished"
+    );
 
     if (process.env.GITHUB_OUTPUT) {
       fs.appendFileSync(
         process.env.GITHUB_OUTPUT,
         `should_create_preview=${shouldCreatePreview}\n`
       );
+      fs.appendFileSync(
+        process.env.GITHUB_OUTPUT,
+        `existing_theme_id=${existingTheme ? existingTheme.id : ""}\n`
+      );
     }
 
     console.log(`Should create preview: ${shouldCreatePreview}`);
+    console.log(
+      `Existing theme ID: ${existingTheme ? existingTheme.id : "None"}`
+    );
     return shouldCreatePreview;
   } catch (error) {
     console.error("Error checking theme status:", error);

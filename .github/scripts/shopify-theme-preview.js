@@ -60,12 +60,12 @@ async function getExistingTheme() {
 }
 
 async function createOrUpdateTheme() {
-  const existingTheme = await getExistingTheme();
+  const existingThemeId = process.env.EXISTING_THEME_ID;
 
-  if (existingTheme) {
-    console.log(`Updating existing unpublished theme: ${existingTheme.id}`);
-    return shopifyApiRequest(`themes/${existingTheme.id}.json`, "PUT", {
-      theme: { id: existingTheme.id },
+  if (existingThemeId) {
+    console.log(`Updating existing unpublished theme: ${existingThemeId}`);
+    return shopifyApiRequest(`themes/${existingThemeId}.json`, "PUT", {
+      theme: { id: existingThemeId },
     });
   } else {
     console.log(`Creating new unpublished theme: ${THEME_NAME}`);
