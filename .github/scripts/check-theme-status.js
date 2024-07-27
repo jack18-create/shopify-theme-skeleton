@@ -89,12 +89,25 @@ async function checkThemeStatus() {
         process.env.GITHUB_OUTPUT,
         `existing_theme_id=${existingTheme ? existingTheme.id : ""}\n`
       );
+      fs.appendFileSync(
+        process.env.GITHUB_OUTPUT,
+        `preview_exists=${existingTheme ? "true" : "false"}\n`
+      );
+      fs.appendFileSync(
+        process.env.GITHUB_OUTPUT,
+        `last_command=${lastRelevantComment ? lastRelevantComment.body : ""}\n`
+      );
     }
 
     console.log(`Should create preview: ${shouldCreatePreview}`);
     console.log(
       `Existing theme ID: ${existingTheme ? existingTheme.id : "None"}`
     );
+    console.log(`Preview exists: ${existingTheme ? "true" : "false"}`);
+    console.log(
+      `Last command: ${lastRelevantComment ? lastRelevantComment.body : "None"}`
+    );
+
     return shouldCreatePreview;
   } catch (error) {
     console.error("Error checking theme status:", error);

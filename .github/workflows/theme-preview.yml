@@ -57,46 +57,34 @@ jobs:
           script: |
             const fs = require('fs');
             const output = fs.readFileSync(process.env.GITHUB_OUTPUT, 'utf8');
+            console.log("GITHUB_OUTPUT contents:", output);
+
             const shouldCreatePreview = output.includes('should_create_preview=true');
             const hasConflicts = output.includes('has_conflicts=true');
             const hasRelevantChanges = output.includes('has_relevant_changes=true');
-
-            // Function to check if a similar comment already exists
-            async function checkExistingComments(message) {
-              const comments = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-              });
-              return comments.data.some(comment => comment.body.includes(message));
-            }
+            const previewExists = output.includes('preview_exists=true');
+            const lastCommand = output.match(/last_command=(.*)/)?.[1] || '';
 
             let commentBody;
-            let shouldComment = true;
 
             if (!shouldCreatePreview) {
-              const disabledMessage = 'Preview creation is disabled. Use !preview to enable.';
-              if (await checkExistingComments(disabledMessage)) {
-                shouldComment = false;
-              } else {
-                commentBody = disabledMessage;
-              }
+              commentBody = 'Preview creation is disabled. Use !preview to enable.';
+            } else if (previewExists && lastCommand.includes('!preview')) {
+              commentBody = 'A preview for this pull request already exists. It will be automatically updated when new changes are pushed to the pull request. If you want to remove the preview, use the !remove command.';
             } else if (hasConflicts) {
               commentBody = 'Conflicts detected. Please resolve conflicts before creating a preview.';
             } else if (!hasRelevantChanges) {
-              commentBody = 'No relevant theme changes detected. Skipping preview creation.';
+              commentBody = 'No relevant theme changes detected. The existing preview (if any) remains unchanged.';
             } else {
               commentBody = 'Preview link: ${{ steps.deploy.outputs.preview_url }}\nTheme ID: ${{ steps.deploy.outputs.theme_id }}\nEditor URL: ${{ steps.deploy.outputs.editor_url }}';
             }
 
-            if (shouldComment && commentBody) {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: commentBody
-              });
-            }
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
 
   cleanup:
     runs-on: ubuntu-latest
