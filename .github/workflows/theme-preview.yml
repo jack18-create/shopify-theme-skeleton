@@ -1,15 +1,16 @@
+# .github/workflows/shopify-theme-preview.yml
+
 name: Shopify Theme Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, closed]
   issue_comment:
     types: [created]
 
 jobs:
-  preview:
+  manage_preview:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.state == 'open' || (github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, '!preview'))
     steps:
       - uses: actions/checkout@v3
         with:
@@ -23,32 +24,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check theme status
-        id: theme_status
-        run: node .github/scripts/check-theme-status.js
+      - name: Manage preview
+        id: manage_preview
+        run: node .github/scripts/manage-preview.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
-
-      - name: Check for conflicts and relevant changes
-        id: checks
-        if: steps.theme_status.outputs.should_create_preview == 'true'
-        run: node .github/scripts/check-conflicts.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
-
-      - name: Deploy theme preview
-        if: steps.theme_status.outputs.should_create_preview == 'true' && steps.checks.outputs.has_conflicts == 'false' && steps.checks.outputs.has_relevant_changes == 'true'
-        id: deploy
-        env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
-          EXISTING_THEME_ID: ${{ steps.theme_status.outputs.existing_theme_id }}
-        run: node .github/scripts/shopify-theme-preview.js
+          EVENT_NAME: ${{ github.event_name }}
+          PR_ACTION: ${{ github.event.action }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
 
       - name: Comment PR
         uses: actions/github-script@v6
@@ -57,76 +43,13 @@ jobs:
           script: |
             const fs = require('fs');
             const output = fs.readFileSync(process.env.GITHUB_OUTPUT, 'utf8');
-            console.log("GITHUB_OUTPUT contents:", output);
+            const commentBody = output.match(/comment_body=(.*)/)?.[1];
 
-            const shouldCreatePreview = output.includes('should_create_preview=true');
-            const hasConflicts = output.includes('has_conflicts=true');
-            const hasRelevantChanges = output.includes('has_relevant_changes=true');
-            const previewExists = output.includes('preview_exists=true');
-            const lastCommand = output.match(/last_command=(.*)/)?.[1] || '';
-
-            // Function to check if a similar comment already exists
-            async function checkExistingComments(message) {
-              const comments = await github.rest.issues.listComments({
+            if (commentBody) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
+                body: commentBody
               });
-              return comments.data.some(comment => comment.body.includes(message));
             }
-
-            let commentBody;
-            let shouldComment = true;
-
-            if (!shouldCreatePreview) {
-              const disabledMessage = 'Preview creation is disabled. Use !preview to enable.';
-              if (await checkExistingComments(disabledMessage)) {
-                shouldComment = false;
-              } else {
-                commentBody = disabledMessage;
-              }
-            } else if (previewExists && lastCommand.includes('!preview')) {
-              commentBody = 'A preview for this pull request already exists. It will be automatically updated when new changes are pushed to the pull request. If you want to remove the preview, use the !remove command.';
-            } else if (hasConflicts) {
-              commentBody = 'Conflicts detected. Please resolve conflicts before creating a preview.';
-            } else if (!hasRelevantChanges) {
-              commentBody = 'No relevant theme changes detected. The existing preview (if any) remains unchanged.';
-            } else {
-              commentBody = 'Preview link: ${{ steps.deploy.outputs.preview_url }}\nTheme ID: ${{ steps.deploy.outputs.theme_id }}\nEditor URL: ${{ steps.deploy.outputs.editor_url }}';
-            }
-
-            if (shouldComment && commentBody) {
-              // Check if this exact comment already exists
-              if (!(await checkExistingComments(commentBody))) {
-                await github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: commentBody
-                });
-              }
-            }
-
-  cleanup:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '!remove')
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      - name: Remove preview theme
-        env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-        run: node .github/scripts/shopify-theme-cleanup.js
-
-      - name: Update theme status
-        run: node .github/scripts/update-theme-status.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
