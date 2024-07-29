@@ -4,9 +4,8 @@ class AnnouncementSlider {
     if (AnnouncementSlider.instances[selector]) {
       return;
     }
-
     this.sliderContainer = document.querySelector(selector);
-    if (!this.sliderContainer) {
+    if (this.sliderContainer != null) {
       throw new Error(`No element found for selector: ${selector}`);
     }
 
@@ -252,4 +251,20 @@ async function fetchShippingRates() {
     console.error('Error fetching shipping rates:', error);
     throw error;
   }
+}
+
+
+function debounce(fn, wait) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), wait);
+  };
+}
+
+function fetchConfig(type = 'json') {
+  return {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: `application/${type}` },
+  };
 }
