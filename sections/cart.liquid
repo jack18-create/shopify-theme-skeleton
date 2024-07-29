@@ -1,5 +1,5 @@
-<cart-drawer id="cart-drawer" class="cart-drawer drawer{% if cart == empty %} is-empty{% endif %}">
-  <div class="{{ section.settings.cart_container_classes }}">
+<cart-drawer class="drawer{% if cart == empty %} is-empty{% endif %}">
+  <div id="cart-drawer" class="{{ section.settings.cart_container_classes }} cart-drawer">
     <!-- Cart Header -->
     <div class="{{ section.settings.cart_header_classes }}">
       <h2 class="{{ section.settings.cart_title_classes }}">{{ section.settings.cart_title }}</h2>
@@ -164,7 +164,6 @@
 
 <!-- Include Cart JavaScript -->
 <script src="{{ 'cart.js' | asset_url }}" defer></script>
- 
 
 {% schema %}
 {
