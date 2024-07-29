@@ -12,95 +12,93 @@
 
     {% if product != blank %}
       <div class="product-information__classes {{ section.settings.product-information__classes }}">
-        {% form 'product', product, id: 'product-form', novalidate: 'novalidate' %}
-          <input
-            type="hidden"
-            name="id"
-            value="{{ selected_variant.id }}"
-          >
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'vendor' %}
+              <div class="vendor__classes {{ section.settings.vendor__classes }}">
+                <span class="vendor-text__classes {{ section.settings.vendor-text__classes }}">
+                  {{- product.vendor -}}
+                </span>
+              </div>
+            {% when 'title' %}
+              <div class="title__classes {{ section.settings.title__classes }}">
+                <h1 class="title-text__classes {{ section.settings.title-text__classes }}">{{ product.title }}</h1>
+              </div>
+            {% when 'price' %}
+              <div class="price__classes {{ section.settings.price__classes }}" id="price-{{ section.id }}">
+                <span class="price-compare-text__classes {{ section.settings.price-compare-text__classes }}">
+                  {{- selected_variant.compare_at_price | money -}}
+                </span>
+                <span class="price-text__classes {{ section.settings.price-text__classes }}">
+                  {{- selected_variant.price | money -}}
+                </span>
 
-          {% for block in section.blocks %}
-            {% case block.type %}
-              {% when 'vendor' %}
-                <div class="vendor__classes {{ section.settings.vendor__classes }}">
-                  <span class="vendor-text__classes {{ section.settings.vendor-text__classes }}">
-                    {{- product.vendor -}}
-                  </span>
+                {% if selected_variant.price < selected_variant.compare_at_price %}
+                  <span class="price-sales__classes {{ section.settings.price-sales__classes }}">Sale</span>
+                {% endif %}
+              </div>
+            {% when 'variant_selector' %}
+              <div class="variant__classes {{ section.settings.variant__classes }}">
+                {% unless product.has_only_default_variant %}
+                  <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
+                    {% for option in product.options_with_values %}
+                      <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
+
+                      <div class="variant-sub__classes {{ section.settings.variant-sub__classes }}">
+                        <select
+                          name="options[{{ option.name | escape }}]"
+                          id="Option-{{ section.id }}-{{ forloop.index0 }}"
+                          class="variant-select__classes {{ section.settings.variant-select__classes }}"
+                        >
+                          {% for value in option.values %}
+                            <option
+                              value="{{ value | escape }}"
+                              {% if option.selected_value == value %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{ value }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <script type="application/json">
+                        {{ product.variants | json }}
+                      </script>
+                    {% endfor %}
+                  </variant-selector>
+                {% endunless %}
+              </div>
+
+            {% when 'quantity' %}
+              <div class="quantity__classes {{ section.settings.quantity__classes }}">
+                <label for="Quantity-{{ section.id }}">Quantity</label>
+
+                <div class="quantity-sub__classes {{ section.settings.quantity-sub__classes }}">
+                  <input
+                    type="number"
+                    name="quantity"
+                    id="Quantity-{{ section.id }}"
+                    value="1"
+                    min="1"
+                    class="quantity-input__classes {{ section.settings.quantity-input__classes }}"
+                  >
                 </div>
-              {% when 'title' %}
-                <div class="title__classes {{ section.settings.title__classes }}">
-                  <h1 class="title-text__classes {{ section.settings.title-text__classes }}">{{ product.title }}</h1>
-                </div>
-              {% when 'price' %}
-                <div class="price__classes {{ section.settings.price__classes }}" id="price-{{ section.id }}">
-                  <span class="price-compare-text__classes {{ section.settings.price-compare-text__classes }}">
-                    {{- selected_variant.compare_at_price | money -}}
-                  </span>
-                  <span class="price-text__classes {{ section.settings.price-text__classes }}">
-                    {{- selected_variant.price | money -}}
-                  </span>
+              </div>
+            {% when 'description' %}
+              <div class="description__classes {{ section.settings.description__classes }}">
+                <p class="description-text__classes {{ section.settings.description-text__classes }}">
+                  {{ product.description }}
+                </p>
+              </div>
 
-                  {% if selected_variant.price < selected_variant.compare_at_price %}
-                    <span class="price-sales__classes {{ section.settings.price-sales__classes }}">Sale</span>
-                  {% endif %}
-                </div>
-              {% when 'variant_selector' %}
-                <div class="variant__classes {{ section.settings.variant__classes }}">
-                  {% unless product.has_only_default_variant %}
-                    <variant-selector data-url="{{ product.url }}" data-section="{{ section.id }}">
-                      {% for option in product.options_with_values %}
-                        <label for="Option-{{ section.id }}-{{ forloop.index0 }}">{{ option.name }}</label>
+            {% when 'checkout_buttons' %}
+              <div class="checkout__classes {{ section.settings.checkout__classes }}">
+                {%- assign product_form_id = 'product-form-' | append: section.id -%}
 
-                        <div class="variant-sub__classes {{ section.settings.variant-sub__classes }}">
-                          <select
-                            name="options[{{ option.name | escape }}]"
-                            id="Option-{{ section.id }}-{{ forloop.index0 }}"
-                            class="variant-select__classes {{ section.settings.variant-select__classes }}"
-                          >
-                            {% for value in option.values %}
-                              <option
-                                value="{{ value | escape }}"
-                                {% if option.selected_value == value %}
-                                  selected="selected"
-                                {% endif %}
-                              >
-                                {{ value }}
-                              </option>
-                            {% endfor %}
-                          </select>
-                        </div>
-
-                        <script type="application/json">
-                          {{ product.variants | json }}
-                        </script>
-                      {% endfor %}
-                    </variant-selector>
-                  {% endunless %}
-                </div>
-
-              {% when 'quantity' %}
-                <div class="quantity__classes {{ section.settings.quantity__classes }}">
-                  <label for="Quantity-{{ section.id }}">Quantity</label>
-
-                  <div class="quantity-sub__classes {{ section.settings.quantity-sub__classes }}">
-                    <input
-                      type="number"
-                      name="quantity"
-                      id="Quantity-{{ section.id }}"
-                      value="1"
-                      min="1"
-                      class="quantity-input__classes {{ section.settings.quantity-input__classes }}"
-                    >
-                  </div>
-                </div>
-              {% when 'description' %}
-                <div class="description__classes {{ section.settings.description__classes }}">
-                  <p class="description-text__classes {{ section.settings.description-text__classes }}">{{ product.description }}</p>
-                </div>
-
-              {% when 'checkout_buttons' %}
-                <div class="checkout__classes {{ section.settings.checkout__classes }}">
-                  <form action="/cart/add" method="post">
+                {% comment %}
+                  {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
                     <input type="hidden" name="id" value="{{ product.variants.first.id }}">
                     <button
                       type="submit"
@@ -116,21 +114,235 @@
                         {{ section.settings.add-to-cart_text }}
                       {% endif %}
                     </button>
-                  </form>
-                </div>
-              {% else %}
+                  {%- endform -%}
+                {% endcomment %}
 
-            {% endcase %}
-          {% endfor %}
-        {% endform %}
+                <product-form class="product-form">
+                  <div class="product-form__error-message-wrapper" role="alert" hidden>
+                    <svg
+                      aria-hidden="true"
+                      focusable="false"
+                      role="presentation"
+                      class="icon icon-error"
+                      viewBox="0 0 13 13"
+                    >
+                      <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                      <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                      <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+                      <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7">
+                    </svg>
+                    <span class="product-form__error-message"></span>
+                  </div>
+
+                  {%- form 'product',
+                    product,
+                    id: product_form_id,
+                    class: 'form',
+                    novalidate: 'novalidate',
+                    data-type: 'add-to-cart-form'
+                  -%}
+                    {% assign hide_default_title = false %}
+                    {% if product.variants.size == 1 and product.variants.first.title contains 'Default' %}
+                      {% assign hide_default_title = true %}
+                    {% endif %}
+                    <div
+                      id="quantity position-r"
+                      {% if hide_default_title %}
+                        style="display: none;"
+                      {% endif %}
+                    >
+                      <select id="product_select_{{product.id}}" name="id" class="select select_new_add">
+                        {% for variant in product.variants %}
+                          <option value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+
+                    <input
+                      type="hidden"
+                      name="id"
+                      value="{{ product.selected_or_first_available_variant.id }}"
+                      disabled
+                    >
+                    <div class="product-form__buttons">
+                      <button
+                        type="submit"
+                        name="add"
+                        class="product-form__submit button button--full-width {% if block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+                        {% if product.selected_or_first_available_variant.available == false %}
+                          disabled
+                        {% endif %}
+                      >
+                        <span>
+                          {%- if product.selected_or_first_available_variant.available -%}
+                            add cart
+                          {%- else -%}
+                            soldout
+                          {%- endif -%}
+                        </span>
+                        <div class="loading-overlay__spinner hidden">
+                          <svg
+                            aria-hidden="true"
+                            focusable="false"
+                            role="presentation"
+                            class="spinner"
+                            viewBox="0 0 66 66"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                          </svg>
+                        </div>
+                      </button>
+                      {%- if block.settings.show_dynamic_checkout -%}
+                        {{ form | payment_button }}
+                      {%- endif -%}
+                    </div>
+                  {%- endform -%}
+                </product-form>
+              </div>
+            {% else %}
+
+          {% endcase %}
+        {% endfor %}
       </div>
     {% else %}
       <div class="no-product__classes {{ section.settings.no-product__classes }}">
-        {{ section.settings.no-product_text }}
+        {{ section.settings['no-product_text'] }}
       </div>
     {% endif %}
   </div>
 </div>
+
+
+ 
+<script id="routes-data" type="application/json">
+  {
+    "cart_add_url": "{{ routes.cart_add_url }}",
+    "cart_url": "{{ routes.cart_url }}"
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const routesData = document.getElementById('routes-data');
+    if (routesData) {
+      window.routes = JSON.parse(routesData.textContent);
+      console.log('Routes object:', window.routes);
+    } else {
+      console.error('Routes data not found');
+    }
+
+    if (!customElements.get('product-form')) {
+      customElements.define(
+        'product-form',
+        class ProductForm extends HTMLElement {
+          constructor() {
+            super();
+            
+            this.form = this.querySelector('form');
+            this.submitButton = this.querySelector('[type="submit"]');
+            this.cart = document.querySelector('cart-drawer');
+
+            if (this.cart) {
+              this.submitButton.setAttribute('aria-haspopup', 'dialog');
+            }
+
+            if (this.form) {
+              this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+            }
+
+            this.errorMessageWrapper = this.querySelector('.product-form__error-message-wrapper');
+            this.errorMessage = this.errorMessageWrapper ? this.errorMessageWrapper.querySelector('.product-form__error-message') : null;
+          }
+
+          onSubmitHandler(evt) {
+            evt.preventDefault();
+            if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
+
+            this.handleErrorMessage();
+
+            this.submitButton.setAttribute('aria-disabled', true);
+            this.submitButton.classList.add('loading');
+            this.querySelector('.loading-overlay__spinner').classList.remove('hidden');
+
+            if (!window.routes || !window.routes.cart_add_url) {
+              console.error('Routes object is not defined');
+              return;
+            }
+
+            const config = {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+              },
+              credentials: 'same-origin'
+            };
+
+            const formData = new FormData(this.form);
+            console.log('Form Data:', Array.from(formData.entries())); // Debugging
+
+            config.body = new URLSearchParams(formData).toString(); // Convert FormData to URLSearchParams
+
+            fetch(window.routes.cart_add_url, config)
+              .then(response => {
+                if (!response.ok) {
+                  return response.text().then(text => {
+                    throw new Error(`Network response was not ok: ${text}`);
+                  });
+                }
+                return response.json();
+              })
+              .then(response => {
+                if (response.status) {
+                  this.handleErrorMessage(response.description);
+
+                  const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
+                  if (!soldOutMessage) return;
+                  this.submitButton.setAttribute('aria-disabled', true);
+                  this.submitButton.querySelector('span').classList.add('hidden');
+                  soldOutMessage.classList.remove('hidden');
+                  this.error = true;
+                  return;
+                }
+
+                if (this.cart) {
+                  this.cart.classList.add('translate-x-full'); // Trigger cart drawer to open
+                  // You may need to update or refresh the cart drawer contents if necessary
+                }
+              })
+              .catch(e => {
+                console.error(e);
+              })
+              .finally(() => {
+                this.submitButton.classList.remove('loading');
+                if (!this.error) this.submitButton.removeAttribute('aria-disabled');
+                this.querySelector('.loading-overlay__spinner').classList.add('hidden');
+              });
+          }
+
+          handleErrorMessage(errorMessage = false) {
+            if (!this.errorMessageWrapper) return;
+
+            this.errorMessageWrapper.toggleAttribute('hidden', !errorMessage);
+
+            if (errorMessage) {
+              this.errorMessage.textContent = errorMessage;
+            }
+          }
+        }
+      );
+    }
+  });
+</script>
+
+
+
+
+
+
+
 
 <script>
   class VariantSelector extends HTMLElement {
