@@ -52,45 +52,13 @@
         "mobile_menu_dropdown_link_classes": "ml-3 text-base font-medium text-gray-500"
       }
     },
-    "navbar_gNbYxG": {
-      "type": "navbar",
-      "disabled": true,
-      "settings": {
-        "menu": "main-menu",
-        "right_menu": "right-menu",
-        "more_menu": "more-menu",
-        "navbar_wrapper": "relative",
-        "navbar_classes": "h-[48px] md:h-[56px] lg:[83px] w-full z-10 bg-white",
-        "container_classes": "border-y-[1px] lg:border-x-[1px] border-brand-black flex justify-between h-full",
-        "navbar__menu_desktop": "hidden lg:flex w-full justify-between",
-        "navbar__menu_left": "hidden lg:flex h-full w-1\/2 justify-start pl-[1px]",
-        "navbar__menu_right": "hidden lg:flex h-full w-1\/2 justify-end pr-[1px]",
-        "left_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-r-[1px] flex items-center justify-center w-1\/4",
-        "right_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-l-[1px] flex items-center justify-center w-1\/4",
-        "navbar__desktop_menu_item": "transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-200",
-        "menu_button_container_classes": "flex items-center justify-center aspect-square border-brand-black border-x lg:hidden",
-        "menu_button_svg_classes": "w-5 h-5",
-        "cart_button_classes": "flex items-center justify-center aspect-square border-brand-black border-x lg:hidden",
-        "cart_button_svg_classes": "w-5 h-5",
-        "menu_overlay_classes": "fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none lg:hidden",
-        "off_canvas_menu_container_classes": "fixed inset-y-0 left-0 w-full md:w-[384px] bg-white z-50 transition-transform duration-300 ease-in-out transform -translate-x-full lg:hidden border border-brand-black",
-        "off_canvas_menu_header_classes": "h-[47px] md:h-[55px] border-b border-brand-black flex items-center justify-start pl-6",
-        "close_menu_button_classes": "flex items-center w-[18.67px] h-[18.67px]",
-        "off_canvas_menu_content_classes": "text-mobile-heading-5 md:text-desktop-heading-5 text-brand-black font-medium h-[calc(100%_-_47px)] md:h-[calc(100%_-_55px)] overflow-y-scroll",
-        "off_canvas_menu_item_classes": "block p-6 border-b border-brand-black hover:underline",
-        "off_canvas_more_menu": "flex flex-col gap-4 border-b border-brand-black font-medium p-6",
-        "off_canvas_more_menu_item": "text-mobile-links tracking-wide md:text-desktop-links hover:underline",
-        "show_social_media": true,
-        "off_canvas_menu_social": "flex border-b border-brand-black font-medium p-6 justify-between",
-        "off_canvas_menu_social_item": "flex items-center justify-center",
-        "off_canvas_menu_social_SVG": "h-5 w-5"
-      }
-    },
     "navbar_6VQw7f": {
       "type": "navbar",
       "settings": {
         "menu": "main-menu",
         "right_menu": "right-menu",
+        "desktop_cart_button_label": "Cart",
+        "desktop_cart_button_link": "",
         "more_menu": "more-menu",
         "navbar_wrapper": "relative",
         "navbar_classes": "h-[48px] md:h-[56px] lg:[83px] w-full z-10 bg-white",
@@ -101,9 +69,11 @@
         "left_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-r-[1px] flex items-center justify-center w-1\/4",
         "right_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-l-[1px] flex items-center justify-center w-1\/4",
         "navbar__desktop_menu_item": "transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-300",
+        "desktop_cart_button_classes": "transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-300 flex items-center justify-center  w-full h-full gap-2",
+        "desktop_cart_button_link_SVG": "w-5 h-5",
         "menu_button_container_classes": "flex items-center justify-center aspect-square border-brand-black border-x lg:hidden",
         "menu_button_svg_classes": "w-5 h-5",
-        "cart_button_classes": "flex items-center justify-center aspect-square border-brand-black border-x lg:hidden",
+        "mobile_cart_button_classes": "flex items-center justify-center aspect-square border-brand-black border-x lg:hidden",
         "cart_button_svg_classes": "w-5 h-5",
         "menu_overlay_classes": "fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none lg:hidden",
         "off_canvas_menu_container_classes": "fixed inset-y-0 left-0 w-full md:w-[384px] bg-white z-50 transition-transform duration-300 ease-in-out transform -translate-x-full lg:hidden border border-brand-black",
@@ -119,84 +89,55 @@
         "off_canvas_menu_social_SVG": "h-5 w-5"
       }
     },
-    "hero_FWBGY4": {
-      "type": "hero",
-      "blocks": {
-        "collection_t7ngDn": {
-          "type": "collection",
-          "settings": {
-            "collection": "dried-flowers",
-            "text": "Shop now",
-            "reverse-image": false,
-            "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
-            "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
-            "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
-            "hero__product-link-text": "font-bold inline-block hover:underline",
-            "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
-            "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
-          }
-        },
-        "collection_gBTHCA": {
-          "type": "collection",
-          "settings": {
-            "collection": "new-snowboards",
-            "text": "Shop now",
-            "reverse-image": true,
-            "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
-            "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
-            "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
-            "hero__product-link-text": "font-bold inline-block hover:underline",
-            "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
-            "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
-          }
-        },
-        "collection_6tfV4V": {
-          "type": "collection",
-          "settings": {
-            "collection": "dried-flowers",
-            "text": "Shop now",
-            "reverse-image": false,
-            "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
-            "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
-            "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
-            "hero__product-link-text": "font-bold inline-block hover:underline",
-            "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
-            "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
-          }
-        }
-      },
-      "block_order": [
-        "collection_t7ngDn",
-        "collection_gBTHCA",
-        "collection_6tfV4V"
-      ],
+    "cart_69hwiH": {
+      "type": "cart",
       "settings": {
-        "hero-main": "Kyiv LuxeBouquets",
-        "hero-main-richtext": "<p>Discover Uniquely Crafted Bouquets and Gifts for Any Occasion: Spread Joy with Our Online Flower Delivery Service<\/p>",
-        "hero__image": "shopify:\/\/shop_images\/heroimage.jpg",
-        "hero__description": "Experience the joy of giving with our modern floral studio. Order online and send fresh flowers, plants and gifts today.",
-        "hero": "flex-wrap lg:flex-nowrap lg:flex w-full justify-between items-start lg:items-stretch lg:max-h-[50vw] lg:overflow-auto lg:hide-scrollbar",
-        "hero__left-col": "w-full lg:w-1\/2 px-4 py-10 md:p-20 lg:border-b-[1px] lg:border-brand-black lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden",
-        "hero__header": "flex flex-col lg:h-[50%] lg:justify-center",
-        "hero__title": "text-mobile-heading-1 font-semibold pb-4 md:pr-12 md:text-desktop-heading-1",
-        "hero__subtitle": "text-mobile-hero-caption pb-6 md:pb-[54px] md:text-desktop-hero-caption lg:pb-0",
-        "hero__content": "flex pt-4 border-t-[1px] border-brand-black md:pt-6 lg:align-center",
-        "tail-hero__image": "w-1\/2 pr-4 object-cover border-r-[1px] border-brand-black aspect-[0.95] md:pr-6 md:aspect-[1.1875]",
-        "tail-hero__description": "w-1\/2 pl-4 content-end text-mobile-small-description md:pl-6 md:text-desktop-caption",
-        "hero__right-col": "w-full lg:w-1\/2 lg:h-screen lg:max-h-[50vw]"
+        "cart_title": "Shopping Cart",
+        "cart_content_product_name": "Rosy Delight",
+        "cart_content_product_quantity": "Quantity (1)",
+        "cart_content_product_price": "$100",
+        "cart_item_remove_button_label": "Remove",
+        "cart_item_remove_button_link": "",
+        "cart_content_subtotal_div_content_label": "Subtotal",
+        "cart_content_subtotal_div_content_total_price": "$100.00",
+        "cart_content_textarea_div_content_message": "Gift Message",
+        "cart_content_delivery_message": "<p>Shipping & taxes calculated at checkout Free standard shipping within Kyiv <\/p>",
+        "cart_content_checkout_button_label": "Check out",
+        "cart_content_checkout_button_link": "",
+        "cart_overlay_classes": "fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none block",
+        "cart_container_classes": "fixed inset-y-0 right-0 w-full lg:w-1\/2 bg-white z-50 transition-transform duration-300 ease-in-out transform translate-x-full flex flex-col overflow-y-auto",
+        "cart_header_classes": "px-6 py-3 flex justify-between items-center h-[48px] md:h-[56px] border-brand-black border-b md:px-10 md:py-4 lg:py-[26px]",
+        "cart_title_classes": "text-mobile-heading-6 font-medium md:text-desktop-heading-6",
+        "close_cart_button_classes": "text-black",
+        "cart_close_button_svg": "w-3 h-3 md:w-4 md:h-4",
+        "cart_content_classes": "flex flex-col h-full",
+        "cart_content_added_product_class": "px-4 py-6 flex flex-col gap-4 border-brand-black border-b md:p-10 md:flex-row md:justify-between",
+        "cart_item_image_classes": "w-[160px] aspect-square object-cover border-brand-black border",
+        "cart_content_added_product_class_main_info_button_div": "flex justify-between items-end md:items-center md:w-full",
+        "cart_content_added_product_class_main_info_button_label_price_div": "flex flex-col gap-2",
+        "cart_content_product_name_classes": "text-mobile-subtitle font-medium",
+        "cart_content_product_quantity_classes": "text-mobile-body",
+        "cart_content_product_price_classes": "text-mobile-subtitle font-medium",
+        "cart_content_added_product_class_main_info_button_remove_button_div": "text-mobile-links font-semibold tracking-[0.025em] md:text-desktop-button",
+        "cart_item_remove_button": "text-brand-gray",
+        "cart_content_subtotal_div": "px-4 py-6 border-brand-black border-b md:p-10",
+        "cart_content_subtotal_div_content": "flex justify-between",
+        "cart_content_subtotal_div_content_label_classes": "text-mobile-subtitle font-medium",
+        "cart_content_subtotal_div_content_total_price_classes": "text-mobile-subtitle font-medium md:text-desktop-heading-5",
+        "cart_content_textarea_div": "px-4 py-6 border-brand-black border-b flex-grow md:p-10",
+        "cart_content_textarea_div_content": "h-full",
+        "cart_content_textarea_div_content_message_classes": "w-full border border-gray-300 text-mobile-body h-full overflow-y-auto p-2 outline-none",
+        "cart_content_delivery_message_div": "px-4 py-10 border-brand-black border-b md:p-10",
+        "cart_content_delivery_message_div_content": "text-black",
+        "cart_content_delivery_message_classes": "text-mobile-caption text-center",
+        "cart_content_checkout_button_div": "w-full font-medium",
+        "cart_content_checkout_button_classes": "block text-center text-mobile-button uppercase w-full h-full bg-brand-black text-white hover:bg-gray-800 transition-colors duration-200 px-6 pt-4 pb-[14px] tracking-[0.025em] md:text-desktop-button md:tracking-[0.03em]"
       }
     }
   },
   "order": [
     "header",
-    "navbar_gNbYxG",
     "navbar_6VQw7f",
-    "hero_FWBGY4"
+    "cart_69hwiH"
   ]
 }
