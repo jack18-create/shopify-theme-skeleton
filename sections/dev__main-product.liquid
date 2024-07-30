@@ -95,13 +95,15 @@
                 </div>
               {% when 'description' %}
                 <div class="description__classes {{ section.settings.description__classes }}">
-                  <p class="description-text__classes {{ section.settings.description-text__classes }}">{{ product.description }}</p>
+                  <p class="description-text__classes {{ section.settings.description-text__classes }}">
+                    {{ product.description }}
+                  </p>
                 </div>
 
               {% when 'checkout_buttons' %}
                 <div class="checkout__classes {{ section.settings.checkout__classes }}">
-                  <form action="/cart/add" method="post">
-                    <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                  <form action="/cart/add" method="post" id="product-form" novalidate="novalidate">
+                    <input type="hidden" name="id" id="variant-id-{{ section.id }}" value="{{ selected_variant.id }}">
                     <button
                       type="submit"
                       name="add"
@@ -111,9 +113,9 @@
                       {% endif %}
                     >
                       {% if selected_variant.available == false %}
-                        {{ section.settings.sold-out_text }}
+                        {{ section.settings['sold-out_text'] }}
                       {% else %}
-                        {{ section.settings.add-to-cart_text }}
+                        {{ section.settings['add-to-cart_text'] }}
                       {% endif %}
                     </button>
                   </form>
@@ -126,82 +128,13 @@
       </div>
     {% else %}
       <div class="no-product__classes {{ section.settings.no-product__classes }}">
-        {{ section.settings.no-product_text }}
+        {{ section.settings['no-product_text'] }}
       </div>
     {% endif %}
   </div>
 </div>
 
-<script>
-  class VariantSelector extends HTMLElement {
-    constructor() {
-      super();
-      this.addEventListener('change', this.onVariantChange);
-    }
-
-    onVariantChange() {
-      this.getSelectedOptions();
-      this.getSelectedVariant();
-
-      if (this.currentVariant) {
-        this.updateURL();
-        this.updateFormID();
-        this.updatePrice();
-      }
-    }
-
-    getSelectedOptions() {
-      this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
-      console.log(this.options);
-    }
-
-    getVariantJSON() {
-      this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
-      return this.variantData;
-    }
-
-    getSelectedVariant() {
-      this.currentVariant = this.getVariantJSON().find((variant) => {
-        const findings = !variant.options
-          .map((option, index) => {
-            return this.options[index] === option;
-          })
-          .includes(false);
-
-        if (findings) return variant;
-      });
-
-      console.log(this.currentVariant);
-    }
-
-    updateURL() {
-      if (!this.currentVariant) return;
-
-      window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
-    }
-
-    updateFormID() {
-      const form_input = document.querySelector('#product-form').querySelector('input[name="id"]');
-      form_input.value = this.currentVariant.id;
-    }
-
-    updatePrice() {
-      fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.section}`)
-        .then((response) => response.text())
-        .then((responseText) => {
-          const id = `price-${this.dataset.section}`;
-          const html = new DOMParser().parseFromString(responseText, 'text/html');
-
-          const oldPrice = document.getElementById(id);
-          const newPrice = html.getElementById(id);
-
-          if (oldPrice && newPrice) oldPrice.innerHTML = newPrice.innerHTML;
-        });
-    }
-  }
-
-  customElements.define('variant-selector', VariantSelector);
-</script>
+<script src="{{ 'dev__product.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
