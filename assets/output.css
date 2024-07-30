@@ -1357,6 +1357,20 @@ video {
   animation: slide-right 4s linear infinite;
 }
 
+@keyframes infiniteSlider {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-250px * 5));
+  }
+}
+
+.animate-infinite-slider {
+  animation: infiniteSlider 20s linear infinite;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -2927,6 +2941,20 @@ video {
 .group[open] .group-open\:rotate-\[-90deg\] {
   --tw-rotate: -90deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 100;
+  }
+}
+
+.group[open] .group-open\:animate-fadeIn {
+  animation: fadeIn 0.2s ease-in-out forwards;
 }
 
 .group:hover .group-hover\:-translate-x-1 {
