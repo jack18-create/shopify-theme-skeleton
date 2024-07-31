@@ -14,10 +14,10 @@
         "navbar_classes": "h-[48px] md:h-[56px] lg:[83px] w-full z-10 bg-white",
         "container_classes": "border-y-[1px] lg:border-x-[1px] border-brand-black flex justify-between h-full",
         "navbar__menu_desktop": "hidden lg:flex w-full justify-between",
-        "navbar__menu_left": "hidden lg:flex h-full w-1/2 justify-start pl-[1px]",
-        "navbar__menu_right": "hidden lg:flex h-full w-1/2 justify-end pr-[1px]",
-        "left_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-r-[1px] flex items-center justify-center w-1/4",
-        "right_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-l-[1px] flex items-center justify-center w-1/4",
+        "navbar__menu_left": "hidden lg:flex h-full w-1\/2 justify-start pl-[1px]",
+        "navbar__menu_right": "hidden lg:flex h-full w-1\/2 justify-end pr-[1px]",
+        "left_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-r-[1px] flex items-center justify-center w-1\/4",
+        "right_menu_item_classes": "text-brand-black hover:text-gray-900 border-brand-black border-l-[1px] flex items-center justify-center w-1\/4",
         "navbar__desktop_menu_item": "transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-300",
         "desktop_cart_button_classes": "transition ease-in-out hover:-translate-y-1 hover:scale-110 duration-300 flex items-center justify-center  w-full h-full gap-2",
         "desktop_cart_button_link_SVG": "w-5 h-5",
@@ -51,11 +51,11 @@
         "cart_content_subtotal_div_content_label": "Subtotal",
         "cart_content_subtotal_div_content_total_price": "$100.00",
         "cart_content_textarea_div_content_message": "Gift Message",
-        "cart_content_delivery_message": "<p>Shipping & taxes calculated at checkout Free standard shipping within Kyiv </p>",
+        "cart_content_delivery_message": "<p>Shipping & taxes calculated at checkout Free standard shipping within Kyiv <\/p>",
         "cart_content_checkout_button_label": "Check out",
         "cart_content_checkout_button_link": "",
         "cart_overlay_classes": "fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none block",
-        "cart_container_classes": "fixed inset-y-0 right-0 w-full lg:w-1/2 bg-white z-50 transition-transform duration-300 ease-in-out transform translate-x-full flex flex-col overflow-y-auto",
+        "cart_container_classes": "fixed inset-y-0 right-0 w-full lg:w-1\/2 bg-white z-50 transition-transform duration-300 ease-in-out transform translate-x-full flex flex-col overflow-y-auto",
         "cart_header_classes": "px-6 py-3 flex justify-between items-center h-[48px] md:h-[56px] border-brand-black border-b md:px-10 md:py-4 lg:py-[26px]",
         "cart_title_classes": "text-mobile-heading-6 font-medium md:text-desktop-heading-6",
         "close_cart_button_classes": "text-black",
@@ -85,5 +85,8 @@
       }
     }
   },
-  "order": ["navbar_6VQw7f", "cart_69hwiH"]
+  "order": [
+    "navbar_6VQw7f",
+    "cart_69hwiH"
+  ]
 }

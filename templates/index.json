@@ -7,16 +7,16 @@
           "type": "collection",
           "settings": {
             "collection": "new-snowboards",
-            "collection_image": "shopify://shop_images/Snowfall.jpg",
+            "collection_image": "shopify:\/\/shop_images\/Snowfall.jpg",
             "text": "Shop now",
             "reverse-image": true,
             "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1/2 flex flex-col justify-between flex-grow border-brand-black p-3",
+            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
             "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
             "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
             "hero__product-link-text": "font-bold inline-block hover:underline",
             "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
+            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
             "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
           }
         },
@@ -27,12 +27,12 @@
             "text": "Shop now",
             "reverse-image": false,
             "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1/2 flex flex-col justify-between flex-grow border-brand-black p-3",
+            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
             "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
             "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
             "hero__product-link-text": "font-bold inline-block hover:underline",
             "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
+            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
             "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
           }
         },
@@ -43,12 +43,12 @@
             "text": "Shop now",
             "reverse-image": true,
             "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1/2 flex flex-col justify-between flex-grow border-brand-black p-3",
+            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
             "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
             "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
             "hero__product-link-text": "font-bold inline-block hover:underline",
             "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
+            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
             "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
           }
         },
@@ -59,12 +59,12 @@
             "text": "Shop now",
             "reverse-image": false,
             "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1/2 flex flex-col justify-between flex-grow border-brand-black p-3",
+            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
             "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
             "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
             "hero__product-link-text": "font-bold inline-block hover:underline",
             "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
+            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
             "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
           }
         },
@@ -75,12 +75,12 @@
             "text": "Shop now",
             "reverse-image": true,
             "hero__row": "flex items-stretch border-[1px] border-brand-black group lg:border-t-0",
-            "hero__product": "w-1/2 flex flex-col justify-between flex-grow border-brand-black p-3",
+            "hero__product": "w-1\/2 flex flex-col justify-between flex-grow border-brand-black p-3",
             "hero__product-title": "flex-none mt-auto text-center text-mobile-heading-3 font-medium md:text-desktop-heading-3",
             "hero__product-link": "mt-auto text-center text-mobile-links font-semibold pb-2 gap-1 flex justify-center md:text-desktop-heading-6 items-center",
             "hero__product-link-text": "font-bold inline-block hover:underline",
             "hero__product-link-svg": "flex items-center h-5 w-5 transition-transform duration-300 ease-in-out",
-            "hero__product-image": "w-1/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
+            "hero__product-image": "w-1\/2 flex-grow object-cover border-brand-black aspect-[0.9375] md:aspect-square overflow-hidden",
             "hero__product-img": "w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110"
           }
         }
@@ -94,18 +94,18 @@
       ],
       "settings": {
         "hero-main": "Kyiv LuxeBouquets",
-        "hero-main-richtext": "<p>Discover Uniquely Crafted Bouquets and Gifts for Any Occasion: Spread Joy with Our Online Flower Delivery Service</p>",
-        "hero__image": "shopify://shop_images/heroimage.jpg",
+        "hero-main-richtext": "<p>Discover Uniquely Crafted Bouquets and Gifts for Any Occasion: Spread Joy with Our Online Flower Delivery Service<\/p>",
+        "hero__image": "shopify:\/\/shop_images\/heroimage.jpg",
         "hero__description": "Experience the joy of giving with our modern floral studio. Order online and send fresh flowers, plants and gifts today.",
         "hero": "flex-wrap lg:flex-nowrap lg:flex w-full justify-between items-start lg:items-stretch lg:max-h-[50vw] lg:overflow-auto lg:hide-scrollbar",
-        "hero__left-col": "w-full lg:w-1/2 px-4 py-10 md:p-20 lg:border-b-[1px] lg:border-brand-black lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden",
+        "hero__left-col": "w-full lg:w-1\/2 px-4 py-10 md:p-20 lg:border-b-[1px] lg:border-brand-black lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden",
         "hero__header": "flex flex-col lg:h-[50%] lg:justify-center",
         "hero__title": "text-mobile-heading-1 font-semibold pb-4 md:pr-12 md:text-desktop-heading-1",
         "hero__subtitle": "text-mobile-hero-caption pb-6 md:pb-[54px] md:text-desktop-hero-caption lg:pb-0",
         "hero__content": "flex pt-4 border-t-[1px] border-brand-black md:pt-6 lg:align-center",
-        "tail-hero__image": "w-1/2 pr-4 object-cover border-r-[1px] border-brand-black aspect-[0.95] md:pr-6 md:aspect-[1.1875]",
-        "tail-hero__description": "w-1/2 pl-4 content-end text-mobile-small-description md:pl-6 md:text-desktop-caption",
-        "hero__right-col": "w-full lg:w-1/2 lg:h-screen lg:max-h-[50vw]"
+        "tail-hero__image": "w-1\/2 pr-4 object-cover border-r-[1px] border-brand-black aspect-[0.95] md:pr-6 md:aspect-[1.1875]",
+        "tail-hero__description": "w-1\/2 pl-4 content-end text-mobile-small-description md:pl-6 md:text-desktop-caption",
+        "hero__right-col": "w-full lg:w-1\/2 lg:h-screen lg:max-h-[50vw]"
       }
     },
     "about_us_X8mMxR": {
@@ -114,7 +114,7 @@
         "about_us__container_left_heading": "About Us",
         "about_us__container_right_small_header": "Our Story",
         "about_us__container_right_sub_header": "Kyiv LuxeBouquets",
-        "about_us__container_right_description": "<p>We are a modern local floral studio, which specializes in the design and delivery of unique bouquets. We have the best florists who carefully select each look, our studio cooperates directly with farms for growing different flowers, so we always have fresh flowers, which are collected by our florists in exquisite bouquets. We have a collection of fresh bouquets, collections of dried bouquets, house plants, as well as fragrant candles from luxury brands to create the perfect atmosphere. Make someone's day amazing by sending flowers, plants and gifts the same or next day. Ordering flowers online has never been easier.</p>",
+        "about_us__container_right_description": "<p>We are a modern local floral studio, which specializes in the design and delivery of unique bouquets. We have the best florists who carefully select each look, our studio cooperates directly with farms for growing different flowers, so we always have fresh flowers, which are collected by our florists in exquisite bouquets. We have a collection of fresh bouquets, collections of dried bouquets, house plants, as well as fragrant candles from luxury brands to create the perfect atmosphere. Make someone's day amazing by sending flowers, plants and gifts the same or next day. Ordering flowers online has never been easier.<\/p>",
         "about_us__container_right_button_label": "Learn More",
         "about_us__container_right_button_link": "",
         "about_us__container": "flex flex-col lg:flex-row w-full",
@@ -183,9 +183,9 @@
       "settings": {
         "main_heading": "Why Choose Us ?",
         "tw-why-choose-us": "flex flex-col lg:flex-row",
-        "tw-section__left-col": "py-10 px-4 gap-4 lg:w-1/2 md:p-20 lg:gap-4 border-b-[1px] border-brand-black",
+        "tw-section__left-col": "py-10 px-4 gap-4 lg:w-1\/2 md:p-20 lg:gap-4 border-b-[1px] border-brand-black",
         "tw-section__main-heading": "font-semibold text-mobile-heading-2 md:text-desktop-heading-2 lg: sticky lg:top-[5.56vw]",
-        "tw-section__right-col": "lg:w-1/2"
+        "tw-section__right-col": "lg:w-1\/2"
       }
     },
     "contact_us_3zCHDF": {
@@ -200,37 +200,37 @@
         "phone_2": "+000000000000",
         "address_heading": "Address",
         "address_1": "OPENING HOURS: 8 TO 11 P.M.",
-        "address_2": "15/4, Kyiv",
-        "image": "shopify://shop_images/contact_us.png",
+        "address_2": "15\/4, Kyiv",
+        "image": "shopify:\/\/shop_images\/contact_us.png",
         "social_heading": "Follow us",
         "container": "flex flex-col-reverse lg:flex-row w-full lg:h-[720px]",
-        "left_container": "w-full lg:w-1/2 h-[702px] md:h-[768px] lg:h-full flex flex-col",
-        "top_block": "py-10 px-4 md:p-20 flex flex-col gap-6 border-brand-black md:h-1/2",
+        "left_container": "w-full lg:w-1\/2 h-[702px] md:h-[768px] lg:h-full flex flex-col",
+        "top_block": "py-10 px-4 md:p-20 flex flex-col gap-6 border-brand-black md:h-1\/2",
         "heading": "text-mobile-heading-2 md:text-desktop-heading-2 font-semibold",
         "form_block": "flex flex-col gap-4",
         "subheading": "text-mobile-subtitle md:text-desktop-hero-caption font-medium capitalize",
         "book_call_button_block": "flex flex-col md:flex-row gap-4 h-[40px] md:h-[56px]",
         "submit_button": "flex items-center justify-center md:w-fit h-full bg-brand-black text-white font-medium hover:text-slate-100 transition-colors duration-300 md:px-6 md:pt-4 md:pb-[14px] text-mobile-button md:text-desktop-button uppercase  tracking-[0.03em]",
-        "bottom_block": "flex flex-col md:flex-row md:h-1/2 flex-grow",
+        "bottom_block": "flex flex-col md:flex-row md:h-1\/2 flex-grow",
         "info_heading": "text-mobile-heading-3 md:text-desktop-heading-3 font-medium border-brand-black py-4 px-4 md:px-[10px] md:text-center border-b",
-        "bottom_block_first_column": "md:w-1/2 border-brand-black border flex flex-col",
+        "bottom_block_first_column": "md:w-1\/2 border-brand-black border flex flex-col",
         "bottom_block_first_column_info_text_div": "flex flex-col py-10 px-4 gap-4 md:items-center md:justify-center md:flex-grow md:p-[10px] md:gap-6 lg:p-6",
         "bottom_block_first_column_info_text_icon_div": "flex gap-2",
         "bottom_block_first_column_info_text_icon_SVG": "w-4 h-4 md:w-5 md:h-5",
         "info_text": "text-desktop-links md:text-desktop-heading-6 font-semibold flex items-center",
-        "bottom_block_second_column": "md:w-1/2 border-brand-black border border-t-0 md:border-t md:border-l-0 lg:border-x-0 flex flex-col h-full",
+        "bottom_block_second_column": "md:w-1\/2 border-brand-black border border-t-0 md:border-t md:border-l-0 lg:border-x-0 flex flex-col h-full",
         "bottom_block_second_column_address_map_div": "px-4 py-10 md:p-[10px] lg:p-6 flex flex-col md:items-center gap-2 md:gap-6 justify-center flex-grow",
         "bottom_block_second_column_address_1": "text-mobile-caption-small  md:text-desktop-caption uppercase font-medium",
         "bottom_block_second_column_address_map_icon_div": "flex gap-2 items-center",
         "bottom_block_second_column_SVG": "w-5 h-5 md:w-6 md:h-6",
         "bottom_block_second_column_address_2": "lg:text-desktop-heading-6 font-semibold",
-        "right_container": "w-full lg:w-1/2 border-brand-black h-[500px] md:h-[580px] lg:h-full  flex flex-col lg:border-l",
+        "right_container": "w-full lg:w-1\/2 border-brand-black h-[500px] md:h-[580px] lg:h-full  flex flex-col lg:border-l",
         "image_container": "w-full flex flex-col flex-grow h-[80%]",
         "image_class": "object-cover w-full h-full",
         "placeholder_image_class": "w-full h-full object-cover bg-gray-200",
         "social_container": "flex w-full flex-col md:flex-row",
-        "social_heading_class": "text-mobile-heading-3 font-medium px-4 pt-4 pb-2 md:text-desktop-heading-3 md:px-10 md:py-4 md:w-1/2 md:text-center border-brand-black md:border md:border-r-0 lg:border-x-0",
-        "social_icons": "flex gap-8 px-4 pt-2 pb-4 border-b border-brand-black  md:px-10 md:py-4 md:w-1/2 md:justify-center items-center md:border lg:border-r-0",
+        "social_heading_class": "text-mobile-heading-3 font-medium px-4 pt-4 pb-2 md:text-desktop-heading-3 md:px-10 md:py-4 md:w-1\/2 md:text-center border-brand-black md:border md:border-r-0 lg:border-x-0",
+        "social_icons": "flex gap-8 px-4 pt-2 pb-4 border-b border-brand-black  md:px-10 md:py-4 md:w-1\/2 md:justify-center items-center md:border lg:border-r-0",
         "social_icon": "text-brand-black hover:text-black transition-colors duration-300",
         "social_icon_svg": "w-6 h-6"
       }
@@ -239,7 +239,7 @@
       "type": "dev__service",
       "settings": {
         "our_service_title": "Our Service",
-        "image": "shopify://shop_images/plan_left_colum_new.png",
+        "image": "shopify:\/\/shop_images\/plan_left_colum_new.png",
         "title": "SERVICE",
         "heading": "Flower Subscriptions",
         "paragraph": "Experience the convenience and savings of regular flower deliveries with our flexible subscription service - up to 30% more profitable than one-time purchases.",
@@ -248,9 +248,9 @@
         "tw-our-service": "py-10 px-4 md:p-20 md:text-center lg:py-20 lg:px-2.5 border-b border-brand-black",
         "tw-our-service__title": "font-semibold text-mobile-heading-2 md:text-desktop-heading-2",
         "tw-service": "lg:flex lg:justify-center lg:items-center border-b-[1px] border-x-[1px] border-brand-black",
-        "tw-service__left-col": "lg:w-1/2 h-[420px] md:h-[500px] lg:h-fit",
+        "tw-service__left-col": "lg:w-1\/2 h-[420px] md:h-[500px] lg:h-fit",
         "tw-service__image": "w-full h-full object-cover object-center md:aspect-[1.536] lg:aspect-square border-b-[1px] lg:border-r-[1px] lg:border-b-0 border-brand-black",
-        "tw-service__right-col": "px-4 py-10 text-center md:p-20 lg:w-1/2",
+        "tw-service__right-col": "px-4 py-10 text-center md:p-20 lg:w-1\/2",
         "tw-service__content": "flex flex-col gap-16",
         "tw-service__text-content": "flex flex-col gap-6",
         "tw-service__title": "font-medium text-mobile-overline md:text-desktop-overline",
@@ -264,10 +264,10 @@
     "image_text_button_overlay_BnAWXJ": {
       "type": "image-text-button-overlay",
       "settings": {
-        "itbo_background_image": "shopify://shop_images/Service_Section_Image_Banner_with_Overlay.png",
+        "itbo_background_image": "shopify:\/\/shop_images\/Service_Section_Image_Banner_with_Overlay.png",
         "itbo__container_text_content_small_header": "Service",
         "itbo__container_text_content_heading_paragraph_div_header": "Wedding & Event Decor",
-        "itbo__container_text_content_heading_paragraph_div_para": "<p>Let our team of expert florists and designers create stunning, on-trend floral décor for your special day. Trust us to bring your vision to life.</p>",
+        "itbo__container_text_content_heading_paragraph_div_para": "<p>Let our team of expert florists and designers create stunning, on-trend floral décor for your special day. Trust us to bring your vision to life.<\/p>",
         "itbo__container_button_label": "Inquire Now",
         "itbo__container_button_link": "",
         "itbo__container": "relative h-[416px] md:h-[500px] lg:h-[720px] flex items-center justify-center",
@@ -282,6 +282,58 @@
         "itbo__container_button_div": "flex items-start justify-center md:inline-block",
         "itbo__container_button_classes": "text-center text-white uppercase hover:bg-brand-black hover:text-white text-mobile-button font-medium border border-white hover:border-white pt-4 pb-[14px] px-4 md:px-6 tracking-[0.025em] w-full md:w-[175px] md:h-[56px] md:tracking-[0.03em] md:text-desktop-button"
       }
+    },
+    "dev_reviews_gbwpRk": {
+      "type": "dev__reviews",
+      "blocks": {
+        "review_kFNRB6": {
+          "type": "review",
+          "settings": {
+            "review_text": "Great product! Highly recommended.",
+            "author_name": "John Doe"
+          }
+        },
+        "review_y43Eck": {
+          "type": "review",
+          "settings": {
+            "review_text": "Excellent service and fast delivery.",
+            "author_name": "Jane Smith"
+          }
+        },
+        "review_jghRXB": {
+          "type": "review",
+          "settings": {
+            "review_text": "The quality exceeded my expectations.",
+            "author_name": "Bob Johnson"
+          }
+        }
+      },
+      "block_order": [
+        "review_kFNRB6",
+        "review_y43Eck",
+        "review_jghRXB"
+      ],
+      "settings": {
+        "heading": "Our Clients say",
+        "button_text": "Read Reviews",
+        "button_link": "",
+        "tw-reviews-section": "flex flex-col gap-16 px-4 py-10 items-center justify-center",
+        "tw-section-content": "flex flex-col items-center justify-center",
+        "tw-section-overline-heading": "flex flex-col gap-6",
+        "tw-section-overline": "flex flex-col gap-2 items-center justify-center",
+        "tw-overline-text": "font-medium text-mobile-overline md:text-desktop-overlines lg:text-[.98vw]",
+        "tw-section-heading": "font-semibold mb-4 text-mobile-heading-2 md:text-desktop-heading-2 lg:text-[3.8vw]",
+        "tw-section-slider": "mx-auto w-full",
+        "tw-reviews-slider": "flex items-center justify-center w-full",
+        "tw-arrow-left": "left-0 lg:left-[-60px] text-3xl z-10 hidden lg:block mr-4",
+        "tw-arrow-right": "right-0 lg:right-[-60px] text-3xl z-10 hidden lg:block rotate-180 ml-4",
+        "tw-slider-content": "text-center w-full lg:w-1\/2 flex-grow",
+        "tw-review-text": "review-text mb-4 text-mobile-heading-4 italic md:text-desktop-heading-4 opacity-70 lg:text-[2.6vw] font-extralight",
+        "tw-review-author": "review-author mt-4 mb-8 font-medium text-mobile-heading-6 md:text-desktop-heading-6 lg:text-[1.25vw]",
+        "tw-pagination-dots": "flex justify-center mt-4",
+        "tw-section-button": "section-button text-center w-full",
+        "tw-button": "button px-6 py-4 border-[1px] border-brand-black w-full inline-block md:inline md:w-auto lg:text-[1.12vw]"
+      }
     }
   },
   "order": [
@@ -290,6 +342,7 @@
     "dev_why_choose_us_WCKxAT",
     "contact_us_3zCHDF",
     "dev_service_keHepD",
-    "image_text_button_overlay_BnAWXJ"
+    "image_text_button_overlay_BnAWXJ",
+    "dev_reviews_gbwpRk"
   ]
 }
