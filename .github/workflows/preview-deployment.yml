@@ -48,12 +48,12 @@ jobs:
         if: steps.check_running.outputs.running == '0'
         run: git checkout development-preview || git checkout -b development-preview
 
-      # - name: Remove all files from development-preview
-      #   if: steps.check_running.outputs.running == '0'
-      #   run: |
-      #     git rm -rf .
-      #     git clean -fd
-      #     git commit -m "Clear development-preview branch"
+      - name: Remove all files from development-preview
+        if: steps.check_running.outputs.running == '0'
+        run: |
+          git rm -rf .
+          git clean -fd
+          git commit -m "Clear development-preview branch"
 
       - name: Check out the PR branch
         if: steps.check_running.outputs.running == '0'
