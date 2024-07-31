@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "dev_service_JxHTef": {
+      "type": "dev__service",
+      "settings": {
+        "our_service_title": "Our Service",
+        "title": "SERVICE",
+        "heading": "Flower Subscriptions",
+        "paragraph": "Experience the convenience and savings of regular flower deliveries with our flexible subscription service - up to 30% more profitable than one-time purchases.",
+        "button_link": "",
+        "button_text": "SUBSCRIBE NOW",
+        "tw-our-service": "py-10 px-4 md:p-20 md:text-center lg:py-20 lg:px-2.5 border-[1px] border-brand-black",
+        "tw-our-service__title": "font-semibold text-mobile-heading-2 md:text-desktop-heading-2",
+        "tw-service": "lg:flex lg:justify-center lg:items-center border-b-[1px] border-x-[1px] border-brand-black",
+        "tw-service__left-col": "lg:w-1\/2",
+        "tw-service__image": "w-full object-cover object-center md:aspect-[1.536] lg:aspect-square border-b-[1px] lg:border-r-[1px] lg:border-b-0 border-brand-black",
+        "tw-service__right-col": "px-4 py-10 text-center md:p-20 lg:w-1\/2",
+        "tw-service__content": "flex flex-col gap-16",
+        "tw-service__text-content": "flex flex-col gap-6",
+        "tw-service__title": "font-medium text-mobile-overline md:text-desktop-overline",
+        "tw-service__heading-paragraph": "flex flex-col gap-4",
+        "tw-service__heading": "font-semibold text-mobile-heading-2 md:text-desktop-heading-2",
+        "tw-service__paragraph": "font-regular text-mobile-body md:text-mobile-subtitle md:font-medium",
+        "tw-service__button": "py-4 px-6 border-[1px] border-brand-black md:py-0 md:px-0 md:border-0",
+        "tw-service__link-button": "md:py-4 md:px-6 md:border-[1px] border-brand-black font-medium text-mobile-button md:text-desktop-button"
+      }
+    }
+  },
+  "order": [
+    "dev_service_JxHTef"
+  ]
+}

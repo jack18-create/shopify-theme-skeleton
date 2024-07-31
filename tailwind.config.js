@@ -107,6 +107,42 @@ module.exports = {
         md: "768px", // tablet
         lg: "1440px", // large screen
       },
+      animation: {
+        'infinite-slider': 'infiniteSlider 20s linear infinite',
+        fadeIn: "fadeIn 0.2s ease-in-out forwards",
+      },
+      keyframes: {
+        infiniteSlider: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': {
+            transform: 'translateX(calc(-250px * 5))',
+          },
+        },
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 100 },
+        },
+      },  
     },
   },
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".no-spin": {
+          "-webkit-appearance": "none",
+          "-moz-appearance": "textfield",
+          appearance: "none",
+          margin: "0",
+        },
+        'input[type="number"]::-webkit-inner-spin-button': {
+          "-webkit-appearance": "none",
+        },
+        'input[type="number"]::-webkit-outer-spin-button': {
+          "-webkit-appearance": "none",
+        },
+      };
+
+      addUtilities(newUtilities, ["responsive", "hover"]);
+    },
+  ],
 };
