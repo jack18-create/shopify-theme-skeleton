@@ -1,5 +1,3 @@
-/* Cart functions */
-
 function cartOpenLoading() {
   const cartContainer = document.querySelector('.drawer-cart');
   cartContainer.classList.add('drawn');
@@ -18,7 +16,7 @@ async function fetchCart() {
     return cart;
   } catch (error) {
     console.error('Error fetching cart:', error);
-    throw error; // Re-throw the error to handle it outside the function if necessary.
+    throw error;
   }
 }
 
@@ -156,22 +154,14 @@ async function clearCart() {
 
 function buildQuickData(buttonElement, sectionId) {
   const properties = {};
-  // Access all data attributes
   const dataAttributes = buttonElement.dataset;
 
-  // Find data attributes from the button element having cart-prop in the attribute name
   for (const key in dataAttributes) {
     if (dataAttributes.hasOwnProperty(key) && key.startsWith('cartProp')) {
-      // Note: dataset converts 'cart-prop' to 'cartProp'
-      // Remove 'cartProp' from the attribute name and add the property to the properties object
       const propKey = key.slice('cartProp'.length);
       properties[propKey.slice(1)] = dataAttributes[key];
     }
   }
-
-  // Check if the button has a data-cart-quantity attribute otherwise set quantity to 1
-  // if quantity and id are provided but its value is nan then it's an identifier so search for that element and store it's value instead
-
   let quantity = dataAttributes.cartQuantity || 1;
   let id = dataAttributes.cartId;
 
@@ -181,8 +171,6 @@ function buildQuickData(buttonElement, sectionId) {
   if (isNaN(id)) {
     id = document.querySelector(id).value;
   }
-
-  // if data-cart-info-quantity-multiplier is present, multiply the quantity by the multiplier
   if (dataAttributes.cartInfoQuantityMultiplier) {
     quantity *= dataAttributes.cartInfoQuantityMultiplier;
   }
@@ -194,58 +182,44 @@ function buildQuickData(buttonElement, sectionId) {
       properties: properties,
     },
   ];
-
   let structuredData = {
     items: data,
   };
-
   if (sectionId) {
     structuredData.sections = sectionId;
   }
-
   return structuredData;
 }
 
 class CartFunctionsWrapper extends HTMLElement {
   constructor() {
     super();
-    //find button element inside the custom element
     this.button = this.querySelector('button');
-    //add click event listener to the button element
-    // pass button element as parameter to the onClickHandler method
     this.button.addEventListener('click', this.onClickHandler);
   }
 
   async onClickHandler(event) {
     event.preventDefault();
-
     if (this.classList.contains('disabled') || this.disabled) {
       return false;
     }
-
-    // if this element has data-cart-referer data attribute then send the element with the data-cart-referer value id, else send this element use dataset
-    // const cartReferer = this.dataset.cartReferer;
 
     const button = this;
     if (!button) {
       return;
     }
-    // call the updateCart method with the button element
     const cartAdd = await addToCart(buildQuickData(button, 'cart-drawer'));
     refreshCart(true, null, cartAdd.sections);
   }
 }
 
-//register the custom element
 customElements.define('cart-functions-wrapper', CartFunctionsWrapper);
 
 class CartActionButton extends HTMLElement {
   constructor() {
     super();
-    //find .delete-cart-product element inside the custom element
     this.buttonDelete = this.querySelector('.delete-cart-product');
     this.buttonQuantity = this.querySelector('input[name="quantity"]');
-    //add click event listener to the button element
     if (this.buttonDelete) {
       this.buttonDelete.addEventListener('click', this.onEventHandler);
     }
@@ -269,34 +243,28 @@ class CartActionButton extends HTMLElement {
       }
     } catch (error) {
       console.error('Error handling cart item change:', error);
-      // Optionally, handle the UI or alert the user.
     }
   }
 }
 
-//register the custom element
 customElements.define('cart-action-button', CartActionButton);
 
 async function updateCartAttributes(attributes) {
   try {
-    // Prepare attributes in the required format
     const encodedAttributes = Object.fromEntries(
       Object.entries(attributes).map(([key, value]) => [
-        encodeURIComponent(key), // Encode keys
-        value !== null ? encodeURIComponent(value) : '', // Encode or empty value
+        encodeURIComponent(key),
+        value !== null ? encodeURIComponent(value) : '',
       ])
     );
 
-    // Use the existing updateCart function to submit the attributes
-    const response = await updateCart({}, false, '', encodedAttributes, 'cart-drawer');  
-    return response; // This response should already be a JSON object
+    const response = await updateCart({}, false, '', encodedAttributes, 'cart-drawer');
+    return response;
   } catch (error) {
     console.error('Error updating cart attributes:', error);
     throw error;
   }
 }
-
-/* custom section */
 
 function handleBodyClickCart(event) {
   if (event.target.closest('.cart-toggler, .add-to-cart')) {
@@ -311,7 +279,6 @@ function handleBodyClickCart(event) {
 function toggleCartVisibility(open) {
   const OVERFLOW_HIDDEN = 'overflow-hidden';
   const action = open ? 'add' : 'remove';
-
   document.querySelector('.drawer-cart')?.classList[action]('drawn');
   document.querySelector('.cart-overlay')?.classList[action]('drawn');
   document.body.classList[action](OVERFLOW_HIDDEN);
@@ -331,7 +298,6 @@ function handleOpenCartOnLoad() {
   }
 }
 
-// Fetch and parse both cart and header HTML content
 async function fetchAndParseCartAndHeader(url) {
   const response = await fetch(url, {
     headers: {
@@ -342,11 +308,8 @@ async function fetchAndParseCartAndHeader(url) {
   if (!response.ok) throw new Error('Network response was not ok');
   const data = await response.json();
   const parser = new DOMParser();
-
   const cartHtmlDoc = parser.parseFromString(data['cart-drawer'], 'text/html');
-
   const cartHTML = cartHtmlDoc.querySelector('.shopify-section-yg-cart-drawer .drawer-cart').innerHTML;
-
   return { cartHTML };
 }
 
@@ -358,7 +321,7 @@ function calculateCustomCartTotal(cartItems) {
   return customCartTotal;
 }
 
-async function handleGratisProducts(cart, custom_cart_total, sections) {
+async function handleGratisProducts(cart, sections) {
   let updatedCart = cart;
   let updatedSections = sections;
   return { cart: updatedCart, sections: updatedSections };
@@ -368,12 +331,11 @@ function findLineForGratisProduct(cart, variantId) {
   const index = cart.items.findIndex(
     (item) => item.properties._gratis_product === 'true' && item.variant_id === parseInt(variantId)
   );
-  return index + 1; // line numbers are 1-based
+  return index + 1;
 }
 
 var _learnq = _learnq || [];
 
-// ========= Gift product script :STARTS =========
 async function checkGratisProductEligibility(data, sections = null) {
   let cart = data;
   let cart_update = data;
@@ -390,11 +352,6 @@ async function checkGratisProductEligibility(data, sections = null) {
       },
     ]);
   }
-
-  // showPromotionNotification(localStorage.getItem('old-cart-total'), custom_cart_total);
-
-  // update cart and sections with new values
-
   const { cart: updatedCart, sections: updatedSections } = await handleGratisProducts(
     cart,
     custom_cart_total,
@@ -402,10 +359,8 @@ async function checkGratisProductEligibility(data, sections = null) {
   );
   cart_update = updatedCart;
   newSections = updatedSections;
-
   return { cart: cart_update, sections: newSections };
 }
-// ========= Gift product script :ENDS =========
 
 // Main function to refresh the cart
 async function refreshCart(openCart = true, cartData = null, sections = null) {
@@ -428,16 +383,13 @@ async function refreshCart(openCart = true, cartData = null, sections = null) {
     let cartHTML;
 
     if (!updatedSections) {
-      // If sections are not provided, fetch them
       const fetchedSections = await fetchAndParseCartAndHeader(cartUrl);
       cartHTML = fetchedSections.cartHTML;
     } else {
-      // Use provided sections
       const parser = new DOMParser();
       const cartHtmlDoc = parser.parseFromString(updatedSections['cart-drawer'], 'text/html');
       cartHTML = cartHtmlDoc.querySelector('.shopify-section-yg-cart-drawer .drawer-cart').innerHTML;
     }
-    // Update DOM elements
     cartContainer.innerHTML = cartHTML;
   } catch (error) {
     console.error('Failed to fetch or update cart:', error);

@@ -46,26 +46,6 @@
                     <h4 class="cart-details-title-wrapper {{ section.settings.cart_content_product_name_classes }}">
                       {{ item.title }}
                     </h4>
-
-                    {% comment %}
-                      <label for="quantity" class="hidden">Quatity Label in cart Drawer</label>
-                      <select
-                        name="quantity"
-                        class="hidden"
-                      >
-                        {%- for val in (1..10) -%}
-                          <option
-                            value="{{ val }}"
-                            class=""
-                            {% if product.quantity == val %}
-                              selected="selected"
-                            {% endif %}
-                          >
-                            {{ val }}
-                          </option>
-                        {%- endfor -%}
-                      </select>
-                    {% endcomment %}
                     <input
                       class="quantity__input"
                       type="hidden"
