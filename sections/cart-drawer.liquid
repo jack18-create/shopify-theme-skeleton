@@ -1,3 +1,154 @@
+<div id="cart-overlay" class="cart-overlay {{ section.settings.cart_overlay_classes }}"></div>
+<div class="drawer-cart {{ section.settings.cart_content_classes }} {{ section.settings.cart_container_classes }} justify-between">
+  <div class="drawer-cart-wrapper">
+    <div class="{{ section.settings.cart_header_classes }}">
+      <h2 class="{{ section.settings.cart_title_classes }}">{{ section.settings.cart_title }}</h2>
+      <button
+        id="close-cart-button"
+        class="close-cart close-cart-button {{ section.settings.close_cart_button_classes }} p-2"
+      >
+        {% assign svg_class = section.settings.cart_close_button_svg %}
+        {% render 'icon-close', class: svg_class %}
+      </button>
+    </div>
+
+    {% if cart.item_count > 0 %}
+      <form
+        action="{{ routes.cart_url }}"
+        id="CartDrawer-Form"
+        class="cart__contents cart-drawer__form"
+        method="post"
+      >
+        <div class="cart-products-container">
+          {% for item in cart.items %}
+            <cart-action-button>
+              <div
+                class="cart-product-wrapper item--{{ forloop.index }} {{ section.settings.cart_content_added_product_class }}"
+                data-line="{{ forloop.index }}"
+              >
+                {% assign image_classes = section.settings.cart_item_image_classes %}
+                {% if item.image %}
+                  {{
+                    item.image
+                    | image_url: width: 300
+                    | image_tag: class: image_classes, alt: section.settings.cart_item_image.alt
+                    | default: 'Image for Cart item'
+                  }}
+                {% else %}
+                  {{
+                    'collection-1'
+                    | placeholder_svg_tag: 'w-[160px] aspect-square object-cover border-brand-black border'
+                  }}
+                {% endif %}
+
+                <div class="cart-details-wrapper {{ section.settings.cart_content_added_product_class_main_info_button_div }}">
+                  <div class="{{ section.settings.cart_content_added_product_class_main_info_button_label_price_div }}">
+                    <h4 class="cart-details-title-wrapper {{ section.settings.cart_content_product_name_classes }}">
+                      {{ item.title }}
+                    </h4>
+
+                    {% comment %}
+                      <label for="quantity" class="hidden">Quatity Label in cart Drawer</label>
+                      <select
+                        name="quantity"
+                        class="hidden"
+                      >
+                        {%- for val in (1..10) -%}
+                          <option
+                            value="{{ val }}"
+                            class=""
+                            {% if product.quantity == val %}
+                              selected="selected"
+                            {% endif %}
+                          >
+                            {{ val }}
+                          </option>
+                        {%- endfor -%}
+                      </select>
+                    {% endcomment %}
+                    <input
+                      class="quantity__input"
+                      type="hidden"
+                      name="quantity"
+                      value="{{ item.quantity }}"
+                      min="0"
+                    >
+
+                    <h4 class="{{ section.settings.cart_content_product_quantity_classes }}">
+                      {{ section.settings.cart_content_product_quantity }} ({{ item.quantity }})
+                    </h4>
+
+                    <h4 class="{{ section.settings.cart_content_product_price_classes }}">
+                      {{ item.original_line_price | money }}
+                    </h4>
+                  </div>
+                  <div
+                    class="delete-cart-product {{ section.settings.cart_content_added_product_class_main_info_button_remove_button_div }} cursor-pointer"
+                    data-line="{{ forloop.index }}"
+                  >
+                    <span class="{{ section.settings.cart_item_remove_button }}">
+                      {{- section.settings.cart_item_remove_button_label | escape -}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </cart-action-button>
+          {% endfor %}
+        </div>
+
+        <div class="{{ section.settings.cart_content_subtotal_div }}">
+          <div class="{{ section.settings.cart_content_subtotal_div_content }}">
+            <h4 class="{{ section.settings.cart_content_subtotal_div_content_label_classes }}">
+              {{ section.settings.cart_content_subtotal_div_content_label }}
+            </h4>
+
+            <h4 class="{{ section.settings.cart_content_subtotal_div_content_total_price_classes }}">
+              {{ cart.total_price | money }}
+            </h4>
+          </div>
+        </div>
+
+        <div class="{{ section.settings.cart_content_textarea_div }}">
+          <div class="{{ section.settings.cart_content_textarea_div_content }}">
+            <textarea
+              class="{{ section.settings.cart_content_textarea_div_content_message_classes }}"
+              placeholder="{{ section.settings.cart_content_textarea_div_content_message }}"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="{{ section.settings.cart_content_delivery_message_div }}">
+          <div class="{{ section.settings.cart_content_delivery_message_div_content }}">
+            <div class="{{ section.settings.cart_content_delivery_message_classes }}">
+              {{ section.settings.cart_content_delivery_message }}
+            </div>
+          </div>
+        </div>
+      </form>
+    {% else %}
+      <p class="empty_cart {{ section.settings.cart_title_classes }} text-center p-20">
+        {{ 'sections.cart.empty' | t }}
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="cart-footer-bottom-checkout {{ section.settings.cart_content_checkout_button_div }}">
+    <checkout-button>
+      <button
+        type="submit"
+        name="checkout"
+        class="{{ section.settings.cart_content_checkout_button_classes }} custom-checkout-btn {% if cart.item_count == 0 %}disabled{% endif %}"
+        {% if cart.item_count == 0 %}
+          data-empty="true"
+        {% endif %}
+        form="CartDrawer-Form"
+      >
+        {{- section.settings.cart_content_checkout_button_label | escape -}}
+      </button>
+    </checkout-button>
+  </div>
+</div>
+
 <style>
   .drawer-cart.drawn {
     transform: translateX(0);
@@ -13,161 +164,6 @@
     height: 49vh;
   }
 </style>
-
-<div id="cart-overlay" class="cart-overlay {{ section.settings.cart_overlay_classes }}"></div>
-<div class="drawer-cart {{ section.settings.cart_content_classes }} {{ section.settings.cart_container_classes }} justify-between">
-  <div class="drawer-cart-wrapper">
-    {% comment %} Cart Header {% endcomment %}
-    <div class="{{ section.settings.cart_header_classes }}">
-      <h2 class="{{ section.settings.cart_title_classes }}">{{ section.settings.cart_title }}</h2>
-      <button id="close-cart-button" class="close-cart {{ section.settings.close_cart_button_classes }}">
-        {% assign svg_class = section.settings.cart_close_button_svg %}
-        {% render 'icon-close', class: svg_class %}
-      </button>
-    </div>
-
-    {% if cart.item_count > 0 %}
-      <form
-        action="{{ routes.cart_url }}"
-        id="CartDrawer-Form"
-        class="cart__contents cart-drawer__form"
-        method="post"
-      >
-      {% comment %} Added Product Block {% endcomment %}
-      <div class="cart-products-container">
-        {% for item in cart.items %}
-          <cart-action-button>
-            <div
-              class="cart-product-wrapper item--{{ forloop.index }} {{ section.settings.cart_content_added_product_class }}"
-              data-line="{{ forloop.index }}"
-            >
-              {% assign image_classes = section.settings.cart_item_image_classes %}
-              {% if item.image %}
-                {{
-                  item.image
-                  | image_url: width: 300
-                  | image_tag: class: image_classes, alt: section.settings.cart_item_image.alt
-                  | default: 'Image for Cart item'
-                }}
-              {% else %}
-                {{
-                  'collection-1'
-                  | placeholder_svg_tag: 'w-[160px] aspect-square object-cover border-brand-black border'
-                }}
-              {% endif %}
-
-              <div class="cart-details-wrapper {{ section.settings.cart_content_added_product_class_main_info_button_div }}">
-                <div class="{{ section.settings.cart_content_added_product_class_main_info_button_label_price_div }}">
-                  <h4 class="cart-details-title-wrapper {{ section.settings.cart_content_product_name_classes }}">
-                    {{ item.title }}
-                  </h4>
-
-                  {% comment %}
-                    <label for="quantity" class="hidden">Quatity Label in cart Drawer</label>
-                    <select
-                      name="quantity"
-                      class="hidden"
-                    >
-                      {%- for val in (1..10) -%}
-                        <option
-                          value="{{ val }}"
-                          class=""
-                          {% if product.quantity == val %}
-                            selected="selected"
-                          {% endif %}
-                        >
-                          {{ val }}
-                        </option>
-                      {%- endfor -%}
-                    </select>
-                  {% endcomment %}
-                  <input
-                    class="quantity__input"
-                    type="hidden"
-                    name="quantity"
-                    value="{{ item.quantity }}"
-                    min="0"
-                  >
-
-                  <h4 class="{{ section.settings.cart_content_product_quantity_classes }}">
-                    {{ section.settings.cart_content_product_quantity }} ({{ item.quantity }})
-                  </h4>
-
-                  <h4 class="{{ section.settings.cart_content_product_price_classes }}">
-                    {{ item.original_line_price | money }}
-                  </h4>
-                </div>
-                <div
-                  class="delete-cart-product {{ section.settings.cart_content_added_product_class_main_info_button_remove_button_div }} cursor-pointer"
-                  data-line="{{ forloop.index }}"
-                >
-                  <span class="{{ section.settings.cart_item_remove_button }}">
-                    {{- section.settings.cart_item_remove_button_label | escape -}}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </cart-action-button>
-        {% endfor %}
-      </div>
-
-      {% comment %} Subtotal Block {% endcomment %}
-      <div class="{{ section.settings.cart_content_subtotal_div }}">
-        <div class="{{ section.settings.cart_content_subtotal_div_content }}">
-          <h4 class="{{ section.settings.cart_content_subtotal_div_content_label_classes }}">
-            {{ section.settings.cart_content_subtotal_div_content_label }}
-          </h4>
-
-          <h4 class="{{ section.settings.cart_content_subtotal_div_content_total_price_classes }}">
-            {{ cart.total_price | money }}
-          </h4>
-        </div>
-      </div>
-
-      {% comment %} Textarea Block {% endcomment %}
-      <div class="{{ section.settings.cart_content_textarea_div }}">
-        <div class="{{ section.settings.cart_content_textarea_div_content }}">
-          <textarea
-            class="{{ section.settings.cart_content_textarea_div_content_message_classes }}"
-            placeholder="{{ section.settings.cart_content_textarea_div_content_message }}"
-          ></textarea>
-        </div>
-      </div>
-
-      {% comment %} Delivery Message Block {% endcomment %}
-      <div class="{{ section.settings.cart_content_delivery_message_div }}">
-        <div class="{{ section.settings.cart_content_delivery_message_div_content }}">
-          <div class="{{ section.settings.cart_content_delivery_message_classes }}">
-            {{ section.settings.cart_content_delivery_message }}
-          </div>
-        </div>
-      </div>
-      </form>
-    {% else %}
-      <p class="empty_cart {{ section.settings.cart_title_classes }} text-center p-20">
-        {{ 'sections.cart.empty' | t }}
-      </p> 
-    {% endif %}
-  </div>
-
-  {% comment %} Checkout Button Block {% endcomment %}
-  <div class="cart-footer-bottom-checkout {{ section.settings.cart_content_checkout_button_div }}">
-    <checkout-button>
-      <button
-        type="submit"
-        name="checkout"
-        class="{{ section.settings.cart_content_checkout_button_classes }} custom-checkout-btn {% if cart.item_count == 0 %}disabled{% endif %}"
-        {% if cart.item_count == 0 %}
-          data-empty="true"
-        {% endif %} 
-        form="CartDrawer-Form"
-      >
-        {{- section.settings.cart_content_checkout_button_label | escape -}}
-      </button>
-    </checkout-button>
-  </div>
-</div>
-
 <script src="{{ 'cart.js' | asset_url }}" defer></script>
 
 {% schema %}

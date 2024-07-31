@@ -1,10 +1,9 @@
 /* Cart functions */
- 
+
 function cartOpenLoading() {
   const cartContainer = document.querySelector('.drawer-cart');
-  // cartContainer.innerHTML += '<div class="load-container"><div class="load"></div></div>';
-  cartContainer.classList.add('drawn'); 
-  document.querySelector('.cart-overlay').classList.add('drawn'); 
+  cartContainer.classList.add('drawn');
+  document.querySelector('.cart-overlay').classList.add('drawn');
 }
 
 async function fetchCart() {
@@ -111,7 +110,7 @@ async function changeCartItem(
   }
 }
 
-async function addToCart(items) { 
+async function addToCart(items) {
   try {
     cartOpenLoading();
     const response = await fetch(`${routes.cart_add_url}`, {
@@ -122,7 +121,6 @@ async function addToCart(items) {
       },
       body: JSON.stringify(items),
     });
-    console.log(response , "response ==========");
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -175,7 +173,7 @@ function buildQuickData(buttonElement, sectionId) {
   // if quantity and id are provided but its value is nan then it's an identifier so search for that element and store it's value instead
 
   let quantity = dataAttributes.cartQuantity || 1;
-  let id = dataAttributes.cartId; 
+  let id = dataAttributes.cartId;
 
   if (isNaN(quantity)) {
     quantity = document.querySelector(quantity).value;
@@ -220,23 +218,20 @@ class CartFunctionsWrapper extends HTMLElement {
 
   async onClickHandler(event) {
     event.preventDefault();
- 
+
     if (this.classList.contains('disabled') || this.disabled) {
       return false;
     }
 
     // if this element has data-cart-referer data attribute then send the element with the data-cart-referer value id, else send this element use dataset
-    // const cartReferer = this.dataset.cartReferer; 
- 
-    const button =  this; 
-    console.log(button, " button =========="); 
+    // const cartReferer = this.dataset.cartReferer;
+
+    const button = this;
     if (!button) {
-      console.error('Referer button not found.');
       return;
     }
     // call the updateCart method with the button element
-    const cartAdd = await addToCart(buildQuickData(button, 'cart-drawer')); // Replace yg-cart-drawer = cart-drawer
-    console.log(cartAdd, " cartAdd ==========");
+    const cartAdd = await addToCart(buildQuickData(button, 'cart-drawer'));
     refreshCart(true, null, cartAdd.sections);
   }
 }
@@ -266,10 +261,10 @@ class CartActionButton extends HTMLElement {
 
       if (event.target.name === 'quantity') {
         const quantity = parseInt(event.target.value);
-        cart = await changeCartItem(line, quantity, true, {}, null, 'cart-drawer', true); // Replace yg-cart-drawer = cart-drawer
+        cart = await changeCartItem(line, quantity, true, {}, null, 'cart-drawer', true);
         refreshCart(false, cart, cart.sections);
       } else {
-        cart = await changeCartItem(line, 0, true, {}, null, 'cart-drawer', true); // Replace yg-cart-drawer = cart-drawer
+        cart = await changeCartItem(line, 0, true, {}, null, 'cart-drawer', true);
         refreshCart(false, cart, cart.sections);
       }
     } catch (error) {
@@ -282,7 +277,6 @@ class CartActionButton extends HTMLElement {
 //register the custom element
 customElements.define('cart-action-button', CartActionButton);
 
-
 async function updateCartAttributes(attributes) {
   try {
     // Prepare attributes in the required format
@@ -294,7 +288,7 @@ async function updateCartAttributes(attributes) {
     );
 
     // Use the existing updateCart function to submit the attributes
-    const response = await updateCart({}, false, '', encodedAttributes, 'cart-drawer');    // Replace yg-cart-drawer = cart-drawer  
+    const response = await updateCart({}, false, '', encodedAttributes, 'cart-drawer');  
     return response; // This response should already be a JSON object
   } catch (error) {
     console.error('Error updating cart attributes:', error);
@@ -304,8 +298,8 @@ async function updateCartAttributes(attributes) {
 
 /* custom section */
 
-function handleBodyClickCart(event) { 
-  if (event.target.closest('.cart-toggler')) {
+function handleBodyClickCart(event) {
+  if (event.target.closest('.cart-toggler, .add-to-cart')) {
     toggleCartVisibility(true);
   } else if (event.target.closest('.close-cart, .cart-overlay')) {
     toggleCartVisibility(false);
@@ -315,21 +309,19 @@ function handleBodyClickCart(event) {
 }
 
 function toggleCartVisibility(open) {
-  const OVERFLOW_HIDDEN = "overflow-hidden";
-  const action = open ? 'add' : 'remove'; 
+  const OVERFLOW_HIDDEN = 'overflow-hidden';
+  const action = open ? 'add' : 'remove';
 
   document.querySelector('.drawer-cart')?.classList[action]('drawn');
-  // document.querySelector('.drawer-cart')?.classList[inverseAction]('translate-x-full');
   document.querySelector('.cart-overlay')?.classList[action]('drawn');
   document.body.classList[action](OVERFLOW_HIDDEN);
 }
 
 window.upsellOpenedByDrawer = false;
-   
 
 function handleDisabledCheckout(button) {
-  if (button.dataset.empty) return; 
-  document.querySelector('.drawer-cart-wrapper')?.scrollTo({ top: 0, behavior: 'smooth' }); 
+  if (button.dataset.empty) return;
+  document.querySelector('.drawer-cart-wrapper')?.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function handleOpenCartOnLoad() {
@@ -351,27 +343,26 @@ async function fetchAndParseCartAndHeader(url) {
   const data = await response.json();
   const parser = new DOMParser();
 
-  const cartHtmlDoc = parser.parseFromString(data['cart-drawer'], 'text/html');    // Replace yg-cart-drawer = cart-drawer  
+  const cartHtmlDoc = parser.parseFromString(data['cart-drawer'], 'text/html');
 
   const cartHTML = cartHtmlDoc.querySelector('.shopify-section-yg-cart-drawer .drawer-cart').innerHTML;
 
   return { cartHTML };
 }
- 
+
 function calculateCustomCartTotal(cartItems) {
-  let customCartTotal = 0; 
-  cartItems.forEach((item) => { 
-      customCartTotal += item.final_line_price; 
-  }); 
+  let customCartTotal = 0;
+  cartItems.forEach((item) => {
+    customCartTotal += item.final_line_price;
+  });
   return customCartTotal;
 }
- 
+
 async function handleGratisProducts(cart, custom_cart_total, sections) {
   let updatedCart = cart;
-  let updatedSections = sections; 
+  let updatedSections = sections;
   return { cart: updatedCart, sections: updatedSections };
 }
- 
 
 function findLineForGratisProduct(cart, variantId) {
   const index = cart.items.findIndex(
@@ -379,62 +370,61 @@ function findLineForGratisProduct(cart, variantId) {
   );
   return index + 1; // line numbers are 1-based
 }
- 
-  var _learnq = _learnq || [];
 
-  
+var _learnq = _learnq || [];
+
 // ========= Gift product script :STARTS =========
-async function checkGratisProductEligibility(data, sections = null) {  
-    let cart = data;
-    let cart_update = data;
-    let custom_cart_total = calculateCustomCartTotal(cart.items); 
-    let newSections = sections;
-    if (_learnq) {
-      _learnq.push([
-        'track',
-        'Added to Cart',
-        {
-          total_price: custom_cart_total / 100,
-          $value: custom_cart_total / 100,
-          items: cart.items,
-        },
-      ]);
-    }
-
-    // showPromotionNotification(localStorage.getItem('old-cart-total'), custom_cart_total);
-
-    // update cart and sections with new values
-    
-    const { cart: updatedCart, sections: updatedSections } = await handleGratisProducts(cart, custom_cart_total, newSections);
-    cart_update = updatedCart;
-    newSections = updatedSections;
- 
-    return { cart: cart_update, sections: newSections };
+async function checkGratisProductEligibility(data, sections = null) {
+  let cart = data;
+  let cart_update = data;
+  let custom_cart_total = calculateCustomCartTotal(cart.items);
+  let newSections = sections;
+  if (_learnq) {
+    _learnq.push([
+      'track',
+      'Added to Cart',
+      {
+        total_price: custom_cart_total / 100,
+        $value: custom_cart_total / 100,
+        items: cart.items,
+      },
+    ]);
   }
-  // ========= Gift product script :ENDS =========
+
+  // showPromotionNotification(localStorage.getItem('old-cart-total'), custom_cart_total);
+
+  // update cart and sections with new values
+
+  const { cart: updatedCart, sections: updatedSections } = await handleGratisProducts(
+    cart,
+    custom_cart_total,
+    newSections
+  );
+  cart_update = updatedCart;
+  newSections = updatedSections;
+
+  return { cart: cart_update, sections: newSections };
+}
+// ========= Gift product script :ENDS =========
 
 // Main function to refresh the cart
-async function refreshCart(openCart = true, cartData = null, sections = null) { 
+async function refreshCart(openCart = true, cartData = null, sections = null) {
   const cartContainer = document.querySelector('.drawer-cart');
   let updatedSections = sections;
-   
- console.log(openCart, "openCart ==========");
+
   if (openCart) {
-    console.log("Open Cart ==========");
     cartContainer.classList.add('drawn');
-    // cartContainer.classList.remove('translate-x-full');
     document.querySelector('.cart-overlay').classList.add('drawn');
   }
 
   try {
-    let data = cartData ? cartData : await fetchCart(); 
-    const { cart: cart_update, sections: newSections } = await checkGratisProductEligibility(data, sections); 
+    let data = cartData ? cartData : await fetchCart();
+    const { cart: cart_update, sections: newSections } = await checkGratisProductEligibility(data, sections);
     updatedSections = newSections;
-    data = cart_update; 
+    data = cart_update;
 
     const rootUrl = routes.root_url === '/' ? '' : routes.root_url;
-    const cartUrl = `${rootUrl}/?sections=cart-drawer`;    // Replace yg-cart-drawer = cart-drawer   
-
+    const cartUrl = `${rootUrl}/?sections=cart-drawer`;
     let cartHTML;
 
     if (!updatedSections) {
@@ -444,25 +434,20 @@ async function refreshCart(openCart = true, cartData = null, sections = null) {
     } else {
       // Use provided sections
       const parser = new DOMParser();
-      const cartHtmlDoc = parser.parseFromString(updatedSections['cart-drawer'], 'text/html');    // Replace yg-cart-drawer = cart-drawer   
-
+      const cartHtmlDoc = parser.parseFromString(updatedSections['cart-drawer'], 'text/html');
       cartHTML = cartHtmlDoc.querySelector('.shopify-section-yg-cart-drawer .drawer-cart').innerHTML;
     }
     // Update DOM elements
     cartContainer.innerHTML = cartHTML;
-     
-
-    // showPromotionNotificationDisplay();
   } catch (error) {
     console.error('Failed to fetch or update cart:', error);
-  } finally { 
+  } finally {
   }
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
-  document.body.addEventListener('click', function(event) { 
-    handleBodyClickCart(event);  
+  document.body.addEventListener('click', function (event) {
+    handleBodyClickCart(event);
   });
-  handleOpenCartOnLoad(); 
+  handleOpenCartOnLoad();
 });

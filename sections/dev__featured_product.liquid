@@ -17,7 +17,7 @@
           <input
             type="hidden"
             name="id"
-            value="{{ product.id }}"
+            value="{{ product.selected_or_first_available_variant.id }}"
           >
 
           {% for block in section.blocks %}
@@ -104,31 +104,9 @@
                 </div>
 
               {% when 'checkout_buttons' %}
-                {% comment %} <div class="checkout__classes {{ section.settings.checkout__classes }}">
-                  <form action="/cart/add" method="post" id="product-form" novalidate="novalidate">
-                    <input type="hidden" name="id" id="variant-id-{{ section.id }}" value="{{ product.variants.first.id }}">
-                    <button
-                      type="submit"
-                      name="add"
-                      class="checkout-button__classes {{ section.settings.checkout-button__classes }}"
-                      {% if product.available == false %}
-                        disabled
-                      {% endif %}
-                    >
-                      {% if product.available == false %}
-                        {{ section.settings['sold-out_text'] }}
-                      {% else %}
-                        {{ section.settings['add-to-cart_text'] }}
-                      {% endif %}
-                    </button>
-                  </form>
-                </div> {% endcomment %}
-
-                
-
                 <div {{ block.shopify_attributes }} class=" {{ section.settings.checkout__classes }}">
-                  {%- if product != blank -%}  
-                   <product-form class="product-form"  >
+                  {%- if product != blank -%}
+                    <product-form class="product-form">
                       <div
                         class="product-form__error-message-wrapper"
                         role="alert"
@@ -162,7 +140,7 @@
                         </svg>
                         <span class="product-form__error-message"></span>
                       </div>
-                
+
                       {%- form 'product',
                         product,
                         id: product_form_id,
@@ -176,29 +154,29 @@
                           value="{{ product.selected_or_first_available_variant.id }}"
                           disabled
                           class="product-variant-id"
-                        >  
-                        <div class="product-form__buttons">  
+                        >
+                        <div class="product-form__buttons">
                           <cart-functions-wrapper>
-                          <button
-                            id="ProductSubmitButton-{{ section.id }}"
-                            type="submit"
-                            name="add"
-                            class="add-to-cart checkout-button__classes {{ section.settings.checkout-button__classes }}"
-                            {% if product.selected_or_first_available_variant.available == false %}
-                              disabled
-                            {% endif %} 
-                            data-cart-quantity="div[id^='MainProduct'] input[name='quantity']"
-                            data-cart-id="input[name='id']"
-                          > 
-                            <span>
-                              {%- if product.selected_or_first_available_variant.available == false -%}
-                                sold out
-                              {%- else -%}
-                                Add to cart
-                              {%- endif -%}
-                            </span> 
-                          </button>
-                          </cart-functions-wrapper> 
+                            <button
+                              id="ProductSubmitButton-{{ section.id }}"
+                              type="submit"
+                              name="add"
+                              class="add-to-cart checkout-button__classes {{ section.settings.checkout-button__classes }}"
+                              {% if product.selected_or_first_available_variant.available == false %}
+                                disabled
+                              {% endif %}
+                              data-cart-quantity="div[id^='MainProduct'] input[name='quantity']"
+                              data-cart-id="input[name='id']"
+                            >
+                              <span>
+                                {%- if product.selected_or_first_available_variant.available == false -%}
+                                  {{ 'sections.cart.sold-out' | t }}
+                                {%- else -%}
+                                  {{ 'sections.cart.add-to-cart' | t }}
+                                {%- endif -%}
+                              </span>
+                            </button>
+                          </cart-functions-wrapper>
                         </div>
                       {%- endform -%}
                     </product-form>
@@ -211,15 +189,12 @@
                           class="product-form__submit button button--full-width button--primary"
                           disabled
                         >
-                          Sold out
+                          {{ 'sections.cart.sold-out' | t }}
                         </button>
                       </div>
                     </div>
-                  {%- endif -%} 
+                  {%- endif -%}
                 </div>
-
-
-
 
               {% else %}
 
