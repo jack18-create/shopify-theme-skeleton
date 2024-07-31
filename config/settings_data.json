@@ -122,7 +122,7 @@
         "settings": {
           "cart_title": "Shopping Cart",
           "cart_content_product_name": "Rosy Delight",
-          "cart_content_product_quantity": "Quantity (1)",
+          "cart_content_product_quantity": "Quantity",
           "cart_content_product_price": "$100",
           "cart_item_remove_button_label": "Remove",
           "cart_item_remove_button_link": "",

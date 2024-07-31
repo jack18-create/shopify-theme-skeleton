@@ -174,10 +174,7 @@ function buildQuickData(buttonElement, sectionId) {
   // if quantity and id are provided but its value is nan then it's an identifier so search for that element and store it's value instead
 
   let quantity = dataAttributes.cartQuantity || 1;
-  let id = dataAttributes.cartId;
-
-  console.log('quantity', quantity);
-    console.log('id', id);
+  let id = dataAttributes.cartId; 
 
   if (isNaN(quantity)) {
     quantity = document.querySelector(quantity).value;
@@ -409,168 +406,156 @@ async function fetchAndParseCartAndHeader(url) {
 //     }
 //   }
 
-// function calculateCustomCartTotal(cartItems) {
-//     let customCartTotal = 0;
+function calculateCustomCartTotal(cartItems) {
+  let customCartTotal = 0; 
+  cartItems.forEach((item) => { 
+      customCartTotal += item.final_line_price; 
+  }); 
+  return customCartTotal;
+}
 
-//     cartItems.forEach((item) => {
-//       if (item.properties._intervalunitofmeasure === 'months') {
-//         const originalPrice = item.original_price;
-//         const subscriptionDiscount = originalPrice * 0.25;
-//         const subscriptionPrice = Math.round(originalPrice - subscriptionDiscount) * item.quantity;
-//         customCartTotal += subscriptionPrice;
-//       } else if (item.properties._gratis_product === 'true') {
-//         // Assuming you don't want to add anything if it's a gratis product
-//       } else if (item.properties._is_pack === 'true') {
-//         customCartTotal += item.final_price * item.quantity;
-//       } else {
-//         customCartTotal += item.final_line_price;
-//       }
-//     });
-
-//     return customCartTotal;
-//   }
 
 // function isSubscriptionAvailable(cartItems) {
 //     return cartItems.some((item) => item.properties && item.properties._intervalunitofmeasure === 'months');
 //   }
 
-async function handleGratisProducts(gratis_products, cart, subscriptionAvailable, custom_cart_total, sections) {
+async function handleGratisProducts(cart, custom_cart_total, sections) {
   let updatedCart = cart;
   let updatedSections = sections;
-  for (const gratis_product of gratis_products) {
-    const gratisAdded =
-      updatedCart.attributes && updatedCart.attributes[`gratis_product_added_${gratis_product.variant_id}`] === 'true';
+  // for (const gratis_product of gratis_products) {
+  //   const gratisAdded =
+  //     updatedCart.attributes && updatedCart.attributes[`gratis_product_added_${gratis_product.variant_id}`] === 'true';
 
-    if (gratis_product.subscription) {
-      if (subscriptionAvailable && !gratisAdded) {
-        const returnedData = await addToCart({
-          items: [
-            {
-              id: parseInt(gratis_product.variant_id),
-              quantity: 1,
-              properties: {
-                _firmhouseid: parseInt(gratis_product.firmhouse_id),
-                _intervalunitofmeasure: 'default',
-                _gratis_product: 'true',
-              },
-            },
-          ],
-          attributes: { [`gratis_product_added_${gratis_product.variant_id}`]: 'true' },
-          sections: 'cart-drawer',       // Replace yg-cart-drawer = cart-drawer  
-        });
-        const cart = await fetchCart();
-        updatedCart = cart;
-        updatedSections = returnedData.sections;
-      } else if (!subscriptionAvailable && gratisAdded) {
-        const line = findLineForGratisProduct(updatedCart, gratis_product.variant_id);
-        await changeCartItem(line, 0, true); // Remove the gratis product
-        const returnedData = await updateCart(
-          {},
-          false,
-          '',
-          { [`gratis_product_added_${gratis_product.variant_id}`]: 'false' },
-          'cart-drawer'     // Replace yg-cart-drawer = cart-drawer  
-        );
-        updatedCart = returnedData;
-        updatedSections = returnedData.sections;
-      }
-    } else {
-      if (custom_cart_total / 100 >= gratis_product.threshold && !gratisAdded) {
-        const returnedData = await addToCart({
-          items: [
-            {
-              id: parseInt(gratis_product.variant_id),
-              quantity: 1,
-              properties: {
-                _firmhouseid: parseInt(gratis_product.firmhouse_id),
-                _intervalunitofmeasure: 'default',
-                _gratis_product: 'true',
-              },
-            },
-          ],
-          attributes: { [`gratis_product_added_${gratis_product.variant_id}`]: 'true' },
-          sections: 'cart-drawer',    // Replace yg-cart-drawer = cart-drawer  
-        });
-        const cart = await fetchCart();
-        updatedCart = cart;
-        updatedSections = returnedData.sections;
-      } else if (custom_cart_total / 100 < gratis_product.threshold && gratisAdded) {
-        const line = findLineForGratisProduct(updatedCart, gratis_product.variant_id);
-        await changeCartItem(line, 0, true); // Remove the gratis product
-        const returnedData = await updateCart(
-          {},
-          false,
-          '',
-          { [`gratis_product_added_${gratis_product.variant_id}`]: 'false' },
-          'cart-drawer'    // Replace yg-cart-drawer = cart-drawer  
-        );
-        updatedCart = returnedData;
-        updatedSections = returnedData.sections;
-      }
-    }
-  }
+  //   if (gratis_product.subscription) {
+  //     if (subscriptionAvailable && !gratisAdded) {
+  //       const returnedData = await addToCart({
+  //         items: [
+  //           {
+  //             id: parseInt(gratis_product.variant_id),
+  //             quantity: 1,
+  //             properties: {
+  //               _firmhouseid: parseInt(gratis_product.firmhouse_id),
+  //               _intervalunitofmeasure: 'default',
+  //               _gratis_product: 'true',
+  //             },
+  //           },
+  //         ],
+  //         attributes: { [`gratis_product_added_${gratis_product.variant_id}`]: 'true' },
+  //         sections: 'cart-drawer',       // Replace yg-cart-drawer = cart-drawer  
+  //       });
+  //       const cart = await fetchCart();
+  //       updatedCart = cart;
+  //       updatedSections = returnedData.sections;
+  //     } else if (!subscriptionAvailable && gratisAdded) {
+  //       const line = findLineForGratisProduct(updatedCart, gratis_product.variant_id);
+  //       await changeCartItem(line, 0, true); // Remove the gratis product
+  //       const returnedData = await updateCart(
+  //         {},
+  //         false,
+  //         '',
+  //         { [`gratis_product_added_${gratis_product.variant_id}`]: 'false' },
+  //         'cart-drawer'     // Replace yg-cart-drawer = cart-drawer  
+  //       );
+  //       updatedCart = returnedData;
+  //       updatedSections = returnedData.sections;
+  //     }
+  //   } else {
+  //     if (custom_cart_total / 100 >= gratis_product.threshold && !gratisAdded) {
+  //       const returnedData = await addToCart({
+  //         items: [
+  //           {
+  //             id: parseInt(gratis_product.variant_id),
+  //             quantity: 1,
+  //             properties: {
+  //               _firmhouseid: parseInt(gratis_product.firmhouse_id),
+  //               _intervalunitofmeasure: 'default',
+  //               _gratis_product: 'true',
+  //             },
+  //           },
+  //         ],
+  //         attributes: { [`gratis_product_added_${gratis_product.variant_id}`]: 'true' },
+  //         sections: 'cart-drawer',    // Replace yg-cart-drawer = cart-drawer  
+  //       });
+  //       const cart = await fetchCart();
+  //       updatedCart = cart;
+  //       updatedSections = returnedData.sections;
+  //     } else if (custom_cart_total / 100 < gratis_product.threshold && gratisAdded) {
+  //       const line = findLineForGratisProduct(updatedCart, gratis_product.variant_id);
+  //       await changeCartItem(line, 0, true); // Remove the gratis product
+  //       const returnedData = await updateCart(
+  //         {},
+  //         false,
+  //         '',
+  //         { [`gratis_product_added_${gratis_product.variant_id}`]: 'false' },
+  //         'cart-drawer'    // Replace yg-cart-drawer = cart-drawer  
+  //       );
+  //       updatedCart = returnedData;
+  //       updatedSections = returnedData.sections;
+  //     }
+  //   }
+  // }
   // return both the updated cart and sections
   return { cart: updatedCart, sections: updatedSections };
 }
 
-async function handleFreeUrlProduct(cart_update, custom_cart_total, cartStrings, sections) {
-  let updatedCart = cart_update;
-  let updatedSections = sections;
-  const urlGift = cart_update.attributes.url_gift;
+// async function handleFreeUrlProduct(cart_update, custom_cart_total, cartStrings, sections) {
+//   let updatedCart = cart_update;
+//   let updatedSections = sections;
+//   const urlGift = cart_update.attributes.url_gift;
 
-  // Use a for...of loop to handle async operations correctly
-  for (let index = 0; index < cartStrings.free_url_product.length; index++) {
-    const product = cartStrings.free_url_product[index];
-    if (cartStrings.free_url_product_available[index] === 'true') {
-      const productInCart = cart_update.items.some(
-        (item) =>
-          item.variant_id == parseInt(cartStrings.free_url_product_available_id[index]) &&
-          item.properties._gratis_product == 'true'
-      );
+//   // Use a for...of loop to handle async operations correctly
+//   for (let index = 0; index < cartStrings.free_url_product.length; index++) {
+//     const product = cartStrings.free_url_product[index];
+//     if (cartStrings.free_url_product_available[index] === 'true') {
+//       const productInCart = cart_update.items.some(
+//         (item) =>
+//           item.variant_id == parseInt(cartStrings.free_url_product_available_id[index]) &&
+//           item.properties._gratis_product == 'true'
+//       );
 
-      const thresholdMet = custom_cart_total / 100 >= parseInt(cartStrings.free_url_threshold[index]);
+//       const thresholdMet = custom_cart_total / 100 >= parseInt(cartStrings.free_url_threshold[index]);
 
-      // Add the product if not already in cart, threshold is met, and it matches the gift parameter
-      if (!productInCart && thresholdMet && product === urlGift) {
-        const returnedData = await addToCart({
-          items: [
-            {
-              id: parseInt(cartStrings.free_url_product_available_id[index]),
-              quantity: 1,
-              properties: {
-                _firmhouseid: parseInt(cartStrings.free_firmhouse_id[index]),
-                _intervalunitofmeasure: 'default',
-                _gratis_product: 'true',
-              },
-            },
-          ],
-          attributes: { url_gift: 'false' },
-          sections: 'cart-drawer',    // Replace yg-cart-drawer = cart-drawer  
-        });
-        updatedCart = await fetchCart();
-        updatedSections = returnedData.sections;
-      }
+//       // Add the product if not already in cart, threshold is met, and it matches the gift parameter
+//       if (!productInCart && thresholdMet && product === urlGift) {
+//         const returnedData = await addToCart({
+//           items: [
+//             {
+//               id: parseInt(cartStrings.free_url_product_available_id[index]),
+//               quantity: 1,
+//               properties: {
+//                 _firmhouseid: parseInt(cartStrings.free_firmhouse_id[index]),
+//                 _intervalunitofmeasure: 'default',
+//                 _gratis_product: 'true',
+//               },
+//             },
+//           ],
+//           attributes: { url_gift: 'false' },
+//           sections: 'cart-drawer',    // Replace yg-cart-drawer = cart-drawer  
+//         });
+//         updatedCart = await fetchCart();
+//         updatedSections = returnedData.sections;
+//       }
 
-      // Remove the product if it's in the cart and below the threshold or if it's the only item
-      if ((productInCart && !thresholdMet) || (cart_update.items.length == 1 && productInCart)) {
-        let line =
-          cart_update.items.findIndex(
-            (item) =>
-              item.properties._gratis_product == 'true' &&
-              item.variant_id == parseInt(cartStrings.free_url_product_available_id[index])
-          ) + 1; // Convert 0-based index to 1-based line number for cart manipulation
+//       // Remove the product if it's in the cart and below the threshold or if it's the only item
+//       if ((productInCart && !thresholdMet) || (cart_update.items.length == 1 && productInCart)) {
+//         let line =
+//           cart_update.items.findIndex(
+//             (item) =>
+//               item.properties._gratis_product == 'true' &&
+//               item.variant_id == parseInt(cartStrings.free_url_product_available_id[index])
+//           ) + 1; // Convert 0-based index to 1-based line number for cart manipulation
 
-        if (line > 0) {
-          const returnedData = await changeCartItem(line, 0, true, {}, null, 'cart-drawer');    // Replace yg-cart-drawer = cart-drawer  
-          updatedCart = returnedData;
-          updatedSections = returnedData.sections;
-        }
-      }
-    }
-  }
+//         if (line > 0) {
+//           const returnedData = await changeCartItem(line, 0, true, {}, null, 'cart-drawer');    // Replace yg-cart-drawer = cart-drawer  
+//           updatedCart = returnedData;
+//           updatedSections = returnedData.sections;
+//         }
+//       }
+//     }
+//   }
 
-  return { cart: updatedCart, sections: updatedSections };
-}
+//   return { cart: updatedCart, sections: updatedSections };
+// }
 
 function findLineForGratisProduct(cart, variantId) {
   const index = cart.items.findIndex(
@@ -579,7 +564,42 @@ function findLineForGratisProduct(cart, variantId) {
   return index + 1; // line numbers are 1-based
 }
  
-   
+  var _learnq = _learnq || [];
+
+  
+// ========= Gift product script :STARTS =========
+async function checkGratisProductEligibility(data, sections = null) {  
+    let cart = data;
+    let cart_update = data;
+    let custom_cart_total = calculateCustomCartTotal(cart.items); 
+    let newSections = sections;
+    if (_learnq) {
+      _learnq.push([
+        'track',
+        'Added to Cart',
+        {
+          total_price: custom_cart_total / 100,
+          $value: custom_cart_total / 100,
+          items: cart.items,
+        },
+      ]);
+    }
+
+    // showPromotionNotification(localStorage.getItem('old-cart-total'), custom_cart_total);
+
+    // update cart and sections with new values
+    
+    const { cart: updatedCart, sections: updatedSections } = await handleGratisProducts(cart, custom_cart_total, newSections);
+    cart_update = updatedCart;
+    newSections = updatedSections;
+
+    // const { cart: updatedCartURL, sections: updatedSectionsURL } = await handleFreeUrlProduct(cart_update, custom_cart_total, cartStrings, newSections)
+    // cart_update = updatedCartURL;
+    // newSections = updatedSectionsURL;
+
+    return { cart: cart_update, sections: newSections };
+  }
+  // ========= Gift product script :ENDS =========
 
 // Main function to refresh the cart
 async function refreshCart(openCart = true, cartData = null, sections = null) { 
@@ -595,19 +615,13 @@ async function refreshCart(openCart = true, cartData = null, sections = null) {
   }
 
   try {
-    let data = cartData ? cartData : await fetchCart();
-    console.log('data', data);
-    const { cart: cart_update, sections: newSections } = await checkGratisProductEligibility(data, sections);
+    let data = cartData ? cartData : await fetchCart(); 
+    const { cart: cart_update, sections: newSections } = await checkGratisProductEligibility(data, sections); 
     updatedSections = newSections;
-    data = cart_update;
-    const cartItems = data ? data.items : [];
-    checkIfSubscriptionProductAvailableInCart(cartItems);
+    data = cart_update; 
 
     const rootUrl = routes.root_url === '/' ? '' : routes.root_url;
-    const cartUrl = `${rootUrl}/?sections=cart-drawer`;    // Replace yg-cart-drawer = cart-drawer  
-
-    console.log('cartUrl', cartUrl);
-    console.log('rootUrl', rootUrl);
+    const cartUrl = `${rootUrl}/?sections=cart-drawer`;    // Replace yg-cart-drawer = cart-drawer   
 
     let cartHTML;
 
@@ -618,7 +632,7 @@ async function refreshCart(openCart = true, cartData = null, sections = null) {
     } else {
       // Use provided sections
       const parser = new DOMParser();
-      const cartHtmlDoc = parser.parseFromString(updatedSections['cart-drawer'], 'text/html');    // Replace yg-cart-drawer = cart-drawer  
+      const cartHtmlDoc = parser.parseFromString(updatedSections['cart-drawer'], 'text/html');    // Replace yg-cart-drawer = cart-drawer   
 
       cartHTML = cartHtmlDoc.querySelector('.shopify-section-yg-cart-drawer .drawer-cart').innerHTML;
     }
@@ -632,7 +646,7 @@ async function refreshCart(openCart = true, cartData = null, sections = null) {
       document.querySelector('.cart-count-bubble-text').textContent = data.item_count;
     }
 
-    showPromotionNotificationDisplay();
+    // showPromotionNotificationDisplay();
   } catch (error) {
     console.error('Failed to fetch or update cart:', error);
   } finally {

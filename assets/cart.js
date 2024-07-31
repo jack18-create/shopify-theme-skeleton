@@ -11,7 +11,7 @@
 
 //   class CartDrawer {
 //     constructor() {
-//       this.drawer = document.getElementById("cart-drawer");
+//       this.drawer = document.getElementsByClassName("drawer-cart");
 //       this.overlay = document.getElementById("cart-overlay");
 //       this.closeCartButton = document.getElementById("close-cart-button");
 //       this.openCartButtons = document.querySelectorAll('[data-action="open-cart"]');
