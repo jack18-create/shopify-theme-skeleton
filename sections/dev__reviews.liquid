@@ -1,3 +1,5 @@
+<script src="{{ 'reviews-slider.js' | asset_url }}" defer></script>
+
 <style>
   review-item {
     display: none;
@@ -49,111 +51,6 @@
     </a>
   </div>
 </div>
-
-<script>
-  class ReviewsSlider extends HTMLElement {
-    constructor() {
-      super();
-      this.currentIndex = 0;
-      this.touchStartX = 0;
-      this.touchEndX = 0;
-      this.visibleDots = 3;
-    }
-
-    connectedCallback() {
-      this.reviews = Array.from(this.querySelectorAll('review-item'));
-      this.leftArrow = this.querySelector('.arrow.left');
-      this.rightArrow = this.querySelector('.arrow.right');
-      this.paginationContainer = this.querySelector('.pagination-dots');
-      this.addControls();
-      this.addPagination();
-      this.addSwipeListeners();
-      this.render();
-    }
-
-    render() {
-      this.reviews.forEach((review, index) => {
-        review.classList.toggle('active', index === this.currentIndex);
-      });
-      this.updatePagination();
-    }
-
-    addControls() {
-      this.leftArrow.addEventListener('click', () => this.prevSlide());
-      this.rightArrow.addEventListener('click', () => this.nextSlide());
-    }
-
-    addPagination() {
-      for (let i = 0; i < Math.min(this.reviews.length, this.visibleDots); i++) {
-        const dot = document.createElement('span');
-        dot.className = 'dot w-2 h-2 rounded-full bg-brand-light-gray mx-1 cursor-pointer transition-colors';
-        dot.addEventListener('click', () => this.goToSlide(i));
-        this.paginationContainer.appendChild(dot);
-      }
-    }
-
-    updatePagination() {
-      const dots = this.paginationContainer.querySelectorAll('.dot');
-      dots.forEach((dot, index) => {
-        const adjustedIndex = (this.currentIndex + index) % this.reviews.length;
-        dot.classList.toggle('bg-gray-700', adjustedIndex === this.currentIndex);
-      });
-    }
-
-    addSwipeListeners() {
-      this.addEventListener(
-        'touchstart',
-        (e) => {
-          this.touchStartX = e.changedTouches[0].screenX;
-        },
-        { passive: true }
-      );
-
-      this.addEventListener(
-        'touchend',
-        (e) => {
-          this.touchEndX = e.changedTouches[0].screenX;
-          this.handleSwipe();
-        },
-        { passive: true }
-      );
-    }
-
-    handleSwipe() {
-      const swipeThreshold = 50;
-      if (this.touchStartX - this.touchEndX > swipeThreshold) {
-        this.nextSlide();
-      }
-      if (this.touchEndX - this.touchStartX > swipeThreshold) {
-        this.prevSlide();
-      }
-    }
-
-    nextSlide() {
-      this.currentIndex = (this.currentIndex + 1) % this.reviews.length;
-      this.render();
-    }
-
-    prevSlide() {
-      this.currentIndex = (this.currentIndex - 1 + this.reviews.length) % this.reviews.length;
-      this.render();
-    }
-
-    goToSlide(index) {
-      this.currentIndex = index;
-      this.render();
-    }
-  }
-
-  class ReviewItem extends HTMLElement {
-    connectedCallback() {
-      this.style.removeProperty('display');
-    }
-  }
-
-  customElements.define('reviews-slider', ReviewsSlider);
-  customElements.define('review-item', ReviewItem);
-</script>
 
 {% schema %}
 {

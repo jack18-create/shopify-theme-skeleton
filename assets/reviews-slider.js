@@ -1,107 +1,96 @@
+// reviews-slider.js
+
 class ReviewsSlider extends HTMLElement {
   constructor() {
     super();
-    this.slides = this.querySelectorAll(".review-slide");
-    this.currentSlide = 0;
-    this.prevButton = this.querySelector(".prev-button");
-    this.nextButton = this.querySelector(".next-button");
-    this.sliderContent = this.querySelector(".reviews-slider-content");
-    this.dotsContainer = this.querySelector(".slider-dots");
+    this.currentIndex = 0;
     this.touchStartX = 0;
     this.touchEndX = 0;
-    this.maxVisibleDots = 4;
+    this.visibleDots = 3;
   }
 
   connectedCallback() {
-    if (this.slides.length > 0) {
-      this.setupDots();
-      this.showSlide(this.currentSlide);
-      this.setupNavigation();
-      this.setupTouchEvents();
-    }
+    this.initializeElements();
+    this.addEventListeners();
+    this.render();
   }
 
-  setupDots() {
-    for (let i = 0; i < this.slides.length; i++) {
+  initializeElements() {
+    this.reviews = Array.from(this.querySelectorAll("review-item"));
+    this.leftArrow = this.querySelector(".arrow.left");
+    this.rightArrow = this.querySelector(".arrow.right");
+    this.paginationContainer = this.querySelector(".pagination-dots");
+    this.addPaginationDots();
+  }
+
+  addEventListeners() {
+    this.leftArrow.addEventListener("click", () => this.changeSlide(-1));
+    this.rightArrow.addEventListener("click", () => this.changeSlide(1));
+    this.addEventListener("touchstart", this.handleTouchStart, {
+      passive: true,
+    });
+    this.addEventListener("touchend", this.handleTouchEnd, { passive: true });
+  }
+
+  addPaginationDots() {
+    const dotCount = Math.min(this.reviews.length, this.visibleDots);
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < dotCount; i++) {
       const dot = document.createElement("span");
-      dot.classList.add("slider-dot");
-      this.dotsContainer.appendChild(dot);
+      dot.className =
+        "dot w-2 h-2 rounded-full bg-brand-light-gray mx-1 cursor-pointer transition-colors";
+      dot.addEventListener("click", () => this.goToSlide(i));
+      fragment.appendChild(dot);
     }
-    this.updateDots(0);
+    this.paginationContainer.appendChild(fragment);
   }
 
-  setupNavigation() {
-    this.prevButton.addEventListener("click", () => this.prevSlide());
-    this.nextButton.addEventListener("click", () => this.nextSlide());
-  }
-
-  setupTouchEvents() {
-    this.sliderContent.addEventListener("touchstart", (e) => {
-      this.touchStartX = e.touches[0].clientX;
+  render() {
+    this.reviews.forEach((review, index) => {
+      review.classList.toggle("active", index === this.currentIndex);
     });
+    this.updatePagination();
+  }
 
-    this.sliderContent.addEventListener("touchend", (e) => {
-      this.touchEndX = e.changedTouches[0].clientX;
-      this.handleSwipe();
+  updatePagination() {
+    const dots = this.paginationContainer.querySelectorAll(".dot");
+    dots.forEach((dot, index) => {
+      const adjustedIndex = (this.currentIndex + index) % this.reviews.length;
+      dot.classList.toggle("bg-gray-700", adjustedIndex === this.currentIndex);
     });
   }
 
-  handleSwipe() {
+  changeSlide(direction) {
+    this.currentIndex =
+      (this.currentIndex + direction + this.reviews.length) %
+      this.reviews.length;
+    this.render();
+  }
+
+  goToSlide(index) {
+    this.currentIndex = index;
+    this.render();
+  }
+
+  handleTouchStart = (e) => {
+    this.touchStartX = e.changedTouches[0].screenX;
+  };
+
+  handleTouchEnd = (e) => {
+    this.touchEndX = e.changedTouches[0].screenX;
     const swipeThreshold = 50;
-    if (this.touchStartX - this.touchEndX > swipeThreshold) {
-      this.nextSlide();
-    } else if (this.touchEndX - this.touchStartX > swipeThreshold) {
-      this.prevSlide();
+    const swipeDistance = this.touchStartX - this.touchEndX;
+    if (Math.abs(swipeDistance) > swipeThreshold) {
+      this.changeSlide(swipeDistance > 0 ? 1 : -1);
     }
-  }
+  };
+}
 
-  showSlide(index) {
-    this.slides.forEach((slide, i) => {
-      slide.style.display = i === index ? "block" : "none";
-    });
-    this.updateDots(index);
-    this.currentSlide = index;
-  }
-
-  updateDots(index) {
-    const dots = this.dotsContainer.querySelectorAll(".slider-dot");
-    const startDot =
-      Math.floor(index / this.maxVisibleDots) * this.maxVisibleDots;
-
-    dots.forEach((dot, i) => {
-      dot.classList.toggle("active", i === index);
-      dot.style.display =
-        i >= startDot && i < startDot + this.maxVisibleDots
-          ? "inline-block"
-          : "none";
-    });
-
-    // Update active dot within visible range
-    const visibleActiveDot = dots[index - startDot + startDot];
-    if (visibleActiveDot) {
-      visibleActiveDot.classList.add("active");
-    }
-  }
-
-  prevSlide() {
-    let newIndex = this.currentSlide - 1;
-    if (newIndex < 0) newIndex = this.slides.length - 1;
-    this.showSlide(newIndex);
-  }
-
-  nextSlide() {
-    let newIndex = this.currentSlide + 1;
-    if (newIndex >= this.slides.length) newIndex = 0;
-    this.showSlide(newIndex);
+class ReviewItem extends HTMLElement {
+  connectedCallback() {
+    this.style.removeProperty("display");
   }
 }
 
 customElements.define("reviews-slider", ReviewsSlider);
-
-// Shopify theme editor support
-document.addEventListener("shopify:section:load", (event) => {
-  const slider = event.target.querySelector("reviews-slider");
-  if (slider) {
-    new ReviewsSlider();
-  }
-});
+customElements.define("review-item", ReviewItem);
