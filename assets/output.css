@@ -2190,6 +2190,11 @@ video {
   padding-bottom: 0.625rem;
 }
 
+.py-20 {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
 .py-24 {
   padding-top: 6rem;
   padding-bottom: 6rem;
@@ -3771,6 +3776,10 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: row-reverse;
   }
 
+  .md\:flex-wrap {
+    flex-wrap: wrap;
+  }
+
   .md\:items-end {
     align-items: flex-end;
   }
@@ -4574,6 +4583,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
   .lg\:text-\[3\.8vw\] {
     font-size: 3.8vw;
+  }
+
+  .lg\:text-\[38px\] {
+    font-size: 38px;
   }
 
   .lg\:text-\[4\.65vw\] {
