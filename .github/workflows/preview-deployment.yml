@@ -1,0 +1,76 @@
+name: Preview Deployment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  preview-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if comment contains !preview
+        id: check_comment
+        run: |
+          if [[ "${{ github.event.comment.body }}" != *"!preview"* ]]; then
+            echo "Comment does not contain !preview, exiting."
+            exit 1
+          fi
+
+      - name: Check if the workflow is already running
+        id: check_running
+        run: |
+          RUNNING=$(gh api repos/${{ github.repository }}/actions/runs --jq '.workflow_runs | map(select(.name == "Preview Deployment" and .status == "in_progress")) | length')
+          echo "::set-output name=running::$RUNNING"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post comment and exit if already running
+        if: steps.check_running.outputs.running != '0'
+        run: |
+          gh pr comment ${{ github.event.issue.number }} --body "Action running in background. Please try again after some time."
+          exit 0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout repository
+        if: steps.check_running.outputs.running == '0'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        if: steps.check_running.outputs.running == '0'
+        run: |
+          git config user.name "mihir-bombay-studio"
+          git config user.email "mihir@deardigital.com"
+
+      - name: Check out the development-preview branch
+        if: steps.check_running.outputs.running == '0'
+        run: git checkout development-preview || git checkout -b development-preview
+
+      # - name: Remove all files from development-preview
+      #   if: steps.check_running.outputs.running == '0'
+      #   run: |
+      #     git rm -rf .
+      #     git clean -fd
+      #     git commit -m "Clear development-preview branch"
+
+      - name: Check out the PR branch
+        if: steps.check_running.outputs.running == '0'
+        run: git fetch origin +refs/pull/${{ github.event.issue.number }}/head:pr-branch
+
+      - name: Merge PR branch into development-preview
+        if: steps.check_running.outputs.running == '0'
+        run: |
+          git checkout development-preview
+          git merge pr-branch --allow-unrelated-histories --no-ff -m "Merging PR #${{ github.event.issue.number }} into development-preview"
+          git push origin development-preview --force
+
+      - name: Comment on successful completion
+        if: always()
+        run: |
+          if [[ ${{ steps.check_running.outputs.running }} == '0' ]]; then
+            gh pr comment ${{ github.event.issue.number }} --body "Preview link: [https://admin.shopify.com/store/theme-skeleton/themes/170516611386/editor](Link)"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
