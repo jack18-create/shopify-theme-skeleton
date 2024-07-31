@@ -13,7 +13,8 @@
         },
         "cart": {
             "cart_error": "There was an error while updating your cart. Please try again.",
-            "cart_quantity_error_html": "You can only add {{ quantity }} of this item to your cart."
+            "cart_quantity_error_html": "You can only add {{ quantity }} of this item to your cart.",
+            "empty": "Empty Cart"
           }
     }
 }

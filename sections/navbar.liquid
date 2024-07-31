@@ -27,7 +27,7 @@
       <!-- Mobile Cart Button -->
       <!-- 'open-cart' is the data action in JS of cart.js to Open Cart --> 
       <span 
-        class="cart-toggler navbar__menu-item {{ section.settings.mobile_cart_button_classes }}"
+        class="cart-toggler navbar__menu-item {{ section.settings.mobile_cart_button_classes }} cursor-pointer"
         {% if settings.cart_type == 'drawer' %}
           data-action="open-cart"
         {% endif %}
@@ -64,7 +64,7 @@
           {% comment %} Desktop Cart Button {% endcomment %}
           <!-- 'open-cart' is the data action in JS of cart.js to Open Cart -->
           <span 
-            class="cart-toggler navbar__menu-item {{ section.settings.right_menu_item_classes }}"
+            class="cart-toggler navbar__menu-item {{ section.settings.right_menu_item_classes }} cursor-pointer"
             {% if settings.cart_type == 'drawer' %}
               data-action="open-cart"
             {% endif %}
@@ -73,7 +73,10 @@
             <span class="navbar__desktop_menu_item {{ section.settings.desktop_cart_button_classes }}">
               {% render 'icon-cart', class: section.settings.desktop_cart_button_link_SVG %}
               {{ section.settings.desktop_cart_button_label }}
-            </span> 
+            </span>
+            {% comment %} <div class="cart-count-bubble {% if cart == empty %}no-disp{% endif %}">
+              <span class="cart-count-bubble-text">{{ cart.item_count }}</span>
+            </div> {% endcomment %}
           </span>
         </div>
       </div>

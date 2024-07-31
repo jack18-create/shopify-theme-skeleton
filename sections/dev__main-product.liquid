@@ -1,4 +1,5 @@
 {% assign selected_variant = product.selected_or_first_available_variant %}
+{%- assign product_form_id = 'product-form-' | append: section.id -%}
 
 <div class="main-container__classes {{ section.settings.main-container__classes }}" id="MainProduct-{{ section.id }}">
   <div class="sub-container__classes {{ section.settings.sub-container__classes }}">
@@ -122,8 +123,7 @@
                     </button>
                   </form>
                 </div> {% endcomment %}
-
-                {%- assign product_form_id = 'product-form-' | append: section.id -%}
+ 
 
                 <div {{ block.shopify_attributes }} class=" {{ section.settings.checkout__classes }}">
                   {%- if product != blank -%}  

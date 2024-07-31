@@ -61,7 +61,7 @@
     {% endif %}
 
     <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
-    {%- if settings.cart_type == 'drawer' -%}
+    {%- if settings.cart_type == 'drawer' -%} 
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
@@ -163,16 +163,6 @@
         quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
       };
     </script>
-
-    <script>
-      window.addEventListener('pageshow', function (event) { 
-        if (event.persisted) {
-          console.log("theme.liquid JS --- ");
-          document.querySelectorAll('.drawer-cart .load-container').forEach((element) => {
-            element.remove();
-          });
-        }
-      });
-    </script>
+  
   </body>
 </html>
