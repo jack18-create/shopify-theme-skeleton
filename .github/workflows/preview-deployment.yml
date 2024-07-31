@@ -70,7 +70,7 @@ jobs:
         if: always()
         run: |
           if [[ ${{ steps.check_running.outputs.running }} == '0' ]]; then
-            gh pr comment ${{ github.event.issue.number }} --body "Preview link: [https://admin.shopify.com/store/theme-skeleton/themes/170516611386/editor](Link)"
+            gh pr comment ${{ github.event.issue.number }} --body "Preview link: [Link](https://admin.shopify.com/store/theme-skeleton/themes/170516611386/editor)"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
