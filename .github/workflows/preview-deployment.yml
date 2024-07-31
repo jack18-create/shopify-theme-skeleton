@@ -44,27 +44,22 @@ jobs:
           git config user.name "mihir-bombay-studio"
           git config user.email "mihir@deardigital.com"
 
-      - name: Check out the development-preview branch
+      - name: Checkout the development-preview branch
         if: steps.check_running.outputs.running == '0'
         run: git checkout development-preview || git checkout -b development-preview
 
-      - name: Remove all files from development-preview
+      - name: Checkout PR branch and rebase
         if: steps.check_running.outputs.running == '0'
         run: |
-          git rm -rf .
-          git clean -fd
-          git commit -m "Clear development-preview branch"
-
-      - name: Check out the PR branch
-        if: steps.check_running.outputs.running == '0'
-        run: git fetch origin +refs/pull/${{ github.event.issue.number }}/head:pr-branch
-
-      - name: Merge PR branch into development-preview
-        if: steps.check_running.outputs.running == '0'
-        run: |
+          git fetch origin +refs/pull/${{ github.event.issue.number }}/head:pr-branch
+          git checkout pr-branch
+          git rebase development-preview || (git rebase --abort && git reset --hard)
           git checkout development-preview
-          git merge pr-branch --allow-unrelated-histories --no-ff -m "Merging PR #${{ github.event.issue.number }} into development-preview"
-          git push origin development-preview --force
+          git reset --hard pr-branch
+
+      - name: Push changes to development-preview
+        if: steps.check_running.outputs.running == '0'
+        run: git push origin development-preview --force
 
       - name: Comment on successful completion
         if: always()
